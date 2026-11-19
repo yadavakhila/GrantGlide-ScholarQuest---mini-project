@@ -1,0 +1,38 @@
+[
+  {
+    "id": "notif-01",
+    "title": "HDFC Bank Parivartan Deadline Approaching!",
+    "message": "Only 5 days left to submit your application for HDFC Bank Parivartan's ECSS Programme (closing 22 Nov 2026). Ensure your income certificate is uploaded.",
+    "type": "Urgent",
+    "date": "2026-11-17",
+    "scholarship_id": "sch-005",
+    "read": false
+  },
+  {
+    "id": "notif-02",
+    "title": "Reliance Foundation Aptitude Test Slot",
+    "message": "Reminder: The deadline for Reliance Foundation Undergraduate Scholarship is in 8 days (25 Nov 2026). Complete your online questionnaire today.",
+    "type": "Approaching",
+    "date": "2026-11-16",
+    "scholarship_id": "sch-003",
+    "read": false
+  },
+  {
+    "id": "notif-03",
+    "title": "AICTE Pragati Portal Window Open",
+    "message": "AICTE Pragati Scholarship for Girl Students deadline set for 30 Nov 2026. Verify AISHE code with your institute nodal officer.",
+    "type": "Info",
+    "date": "2026-11-15",
+    "scholarship_id": "sch-002",
+    "read": true
+  },
+  {
+    "id": "notif-04",
+    "title": "New Scheme Added: Adobe Women-in-Technology",
+    "message": "A high-value scholarship of ₹1,50,000 + Internship has been added for female engineering and computer science students.",
+    "type": "New",
+    "date": "2026-11-14",
+    "scholarship_id": "sch-009",
+    "read": true
+  }
+]

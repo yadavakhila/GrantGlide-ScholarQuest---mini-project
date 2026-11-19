@@ -1,0 +1,2829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GrantGlide – ScholarQuest | Smart Scholarship Discovery & Application Platform</title>
+  
+  <!-- Bootstrap 5.3 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- FontAwesome 6 -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <nav class="navbar navbar-expand-lg top-navbar px-3 px-lg-4 py-2">
+    <div class="container-fluid">
+      <!-- Brand -->
+      <a class="navbar-brand" href="#dashboard" onclick="navigateTo('dashboard')">
+        <div class="brand-icon-box">
+          <i class="fa-solid fa-graduation-cap"></i>
+        </div>
+        <div>
+          <span style="font-weight: 800; background: linear-gradient(135deg, #4f46e5, #7c3aed); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">GrantGlide</span>
+          <span class="text-muted fw-normal" style="font-size: 0.85rem; display: block; line-height: 1;">ScholarQuest Platform</span>
+        </div>
+      </a>
+
+      <!-- Quick Search input -->
+      <div class="d-none d-md-flex align-items-center ms-4 flex-grow-1" style="max-width: 380px;">
+        <div class="input-group">
+          <span class="input-group-text bg-light border-end-0 text-muted"><i class="fa-solid fa-magnifying-glass"></i></span>
+          <input type="text" id="global-search-input" class="form-control bg-light border-start-0" placeholder="Search scholarships, exams, schemes..." onkeyup="handleGlobalSearch(event)">
+        </div>
+      </div>
+
+      <!-- Action items -->
+      <div class="d-flex align-items-center gap-3 ms-auto">
+        <!-- Hackathon Framework Structure Modal Button -->
+        <button class="btn btn-outline-primary btn-sm rounded-pill d-flex align-items-center gap-2 px-3 fw-bold shadow-sm" onclick="openFrameworkModal()">
+          <i class="fa-solid fa-sitemap"></i>
+          <span class="d-none d-md-inline">Framework Structure</span>
+        </button>
+
+        <!-- Hackathon Presentation Pitch Deck Button -->
+        <button class="pitch-btn btn btn-sm d-flex align-items-center gap-2" onclick="openPresentationModal()">
+          <i class="fa-solid fa-chalkboard-user"></i>
+          <span>Pitch Deck (10 Slides)</span>
+        </button>
+
+        <!-- Notifications Dropdown -->
+        <div class="dropdown">
+          <button class="btn btn-light rounded-circle position-relative p-2" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="width: 40px; height: 40px;">
+            <i class="fa-regular fa-bell text-secondary"></i>
+            <span id="notif-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.65rem;">
+              2
+            </span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end shadow-lg p-2" id="notif-dropdown-menu" style="width: 320px; max-height: 380px; overflow-y: auto;">
+            <li class="dropdown-header fw-bold text-dark d-flex justify-content-between align-items-center">
+              <span>Notifications & Reminders</span>
+              <span class="badge bg-primary-subtle text-primary" style="cursor: pointer;" onclick="markAllNotifsRead()">Mark Read</span>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <div id="notif-list-container">
+              <!-- Injected by JS -->
+            </div>
+          </ul>
+        </div>
+
+        <!-- Student Profile / Switcher Dropdown & Auth Trigger -->
+        <div id="auth-buttons-container" class="d-none">
+          <button class="btn btn-primary btn-sm rounded-pill px-3 fw-semibold" onclick="openAuthModal('signin')">
+            <i class="fa-solid fa-right-to-bracket me-1"></i> Sign In / Register
+          </button>
+        </div>
+
+        <div class="dropdown" id="user-profile-dropdown">
+          <button class="btn btn-outline-light text-dark border d-flex align-items-center gap-2 px-3 py-1 rounded-pill" type="button" data-bs-toggle="dropdown">
+            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 28px; height: 28px; font-size: 0.8rem; font-weight: 700;" id="user-avatar-initial">
+              A
+            </div>
+            <div class="text-start d-none d-sm-block">
+              <div class="fw-bold" style="font-size: 0.85rem;" id="nav-user-name">Aarav Sharma</div>
+              <div class="text-muted" style="font-size: 0.72rem;" id="nav-user-role">Student (UG)</div>
+            </div>
+            <i class="fa-solid fa-chevron-down text-muted" style="font-size: 0.7rem;"></i>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end shadow-lg p-2" style="min-width: 260px;">
+            <li class="dropdown-header text-uppercase text-muted" style="font-size: 0.7rem;">Active Student Account</li>
+            <li><a class="dropdown-item py-2" href="#" onclick="openProfileEditModal(); return false;"><i class="fa-solid fa-id-card me-2 text-primary"></i> Edit My Profile Details</a></li>
+            <li><a class="dropdown-item py-2" href="#eligibility" onclick="navigateTo('eligibility'); return false;"><i class="fa-solid fa-bullseye me-2 text-success"></i> My Eligibility Diagnostic</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li class="dropdown-header text-uppercase text-muted" style="font-size: 0.7rem;">Switch Demo Persona</li>
+            <li><a class="dropdown-item py-2" href="#" onclick="switchStudent('std-101'); return false;"><i class="fa-solid fa-user me-2 text-primary"></i> Aarav Sharma (UG Engg, 84.5%)</a></li>
+            <li><a class="dropdown-item py-2" href="#" onclick="switchStudent('std-102'); return false;"><i class="fa-solid fa-user-graduate me-2 text-purple"></i> Priya Verma (OBC / Girl in Tech, 88.2%)</a></li>
+            <li><a class="dropdown-item py-2" href="#" onclick="switchStudent('std-103'); return false;"><i class="fa-solid fa-award me-2 text-warning"></i> Rahul Kumar (SC / Diploma, 76.0%)</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item py-2" href="#" onclick="switchToAdmin(); return false;"><i class="fa-solid fa-shield-halved me-2 text-danger"></i> Admin / Evaluator Panel</a></li>
+            <li><a class="dropdown-item py-2" href="#" onclick="openAuthModal('register'); return false;"><i class="fa-solid fa-user-plus me-2 text-info"></i> Register New Student Account</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item py-2 text-danger" href="#" onclick="logoutUser(); return false;"><i class="fa-solid fa-right-from-bracket me-2"></i> Sign Out</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- App Body Layout -->
+  <div class="app-container">
+    <!-- Left Sidebar Navigation -->
+    <aside class="app-sidebar">
+      <div class="nav-section-title">Discovery & Matching</div>
+      <a href="#dashboard" class="nav-link active" id="nav-item-dashboard" onclick="navigateTo('dashboard')">
+        <i class="fa-solid fa-chart-pie"></i>
+        <span>Dashboard</span>
+      </a>
+      <a href="#discovery" class="nav-link" id="nav-item-discovery" onclick="navigateTo('discovery')">
+        <i class="fa-solid fa-compass"></i>
+        <span>Scholarship Catalog</span>
+      </a>
+      <a href="#eligibility" class="nav-link" id="nav-item-eligibility" onclick="navigateTo('eligibility')">
+        <i class="fa-solid fa-bullseye"></i>
+        <span>Smart Eligibility Checker</span>
+      </a>
+
+      <div class="nav-section-title">Application & Planning</div>
+      <a href="#tracker" class="nav-link" id="nav-item-tracker" onclick="navigateTo('tracker')">
+        <i class="fa-solid fa-list-check"></i>
+        <span>Application Tracker</span>
+      </a>
+      <a href="#documents" class="nav-link" id="nav-item-documents" onclick="navigateTo('documents')">
+        <i class="fa-solid fa-folder-open"></i>
+        <span>Document Assistance</span>
+      </a>
+      <a href="#deadlines" class="nav-link" id="nav-item-deadlines" onclick="navigateTo('deadlines')">
+        <i class="fa-solid fa-calendar-day"></i>
+        <span>Deadlines & Calendar</span>
+      </a>
+      <a href="#guidance" class="nav-link" id="nav-item-guidance" onclick="navigateTo('guidance')">
+        <i class="fa-solid fa-book-open-reader"></i>
+        <span>Application Guidance</span>
+      </a>
+
+      <div class="nav-section-title">Administration & Account</div>
+      <a href="#admin" class="nav-link" id="nav-item-admin" onclick="navigateTo('admin')">
+        <i class="fa-solid fa-sliders"></i>
+        <span>Admin Management</span>
+      </a>
+      <a href="#auth" class="nav-link" id="nav-item-auth" onclick="navigateTo('auth')">
+        <i class="fa-solid fa-user-lock"></i>
+        <span>Login & Registration</span>
+      </a>
+
+      <div class="nav-section-title">Hackathon Blueprint</div>
+      <a href="#framework" class="nav-link" id="nav-item-framework" onclick="openFrameworkModal(); return false;">
+        <i class="fa-solid fa-sitemap"></i>
+        <span>Framework Structure</span>
+      </a>
+
+      <!-- Quick Hackathon Badge at bottom of sidebar -->
+      <div class="mt-auto p-3 rounded-4 bg-light border text-center">
+        <div class="fw-bold text-dark" style="font-size: 0.85rem;"><i class="fa-solid fa-bolt text-warning me-1"></i> ScholarQuest v1.0</div>
+        <div class="text-muted" style="font-size: 0.72rem; margin-top: 2px;">Education Tech Hackathon</div>
+        <button class="btn btn-sm btn-outline-primary w-100 mt-2" style="font-size: 0.78rem;" onclick="openPresentationModal()">
+          Open Pitch Slides
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+
+      <!-- ============================================================== -->
+      <!-- MODULE 1: DEDICATED STUDENT REGISTRATION & LOGIN PAGE VIEW -->
+      <!-- ============================================================== -->
+      <section id="view-auth" class="content-view d-none">
+        <div class="mb-4">
+          <span class="badge bg-primary-subtle text-primary px-3 py-1 rounded-pill mb-1">Module 1: Authentication & Onboarding</span>
+          <h2 class="fw-bold mb-1">Student Account Access & Registration</h2>
+          <p class="text-muted mb-0">Create your student profile to automatically match with scholarships, or sign in to manage your applications.</p>
+        </div>
+
+        <div class="row g-4">
+          <!-- Auth Forms Column -->
+          <div class="col-lg-7">
+            <div class="card-custom p-4">
+              <!-- Auth Tabs Nav -->
+              <ul class="nav nav-pills nav-fill mb-4 p-1 bg-light rounded-pill" role="tablist">
+                <li class="nav-item">
+                  <button class="nav-link active rounded-pill fw-bold py-2" id="page-signin-tab-btn" data-bs-toggle="pill" data-bs-target="#page-signin-tab" type="button">
+                    <i class="fa-solid fa-right-to-bracket me-1"></i> Sign In to Account
+                  </button>
+                </li>
+                <li class="nav-item">
+                  <button class="nav-link rounded-pill fw-bold py-2" id="page-register-tab-btn" data-bs-toggle="pill" data-bs-target="#page-register-tab" type="button">
+                    <i class="fa-solid fa-user-plus me-1"></i> Create Student Account
+                  </button>
+                </li>
+              </ul>
+
+              <div class="tab-content">
+                <!-- Sign In Form -->
+                <div class="tab-pane fade show active" id="page-signin-tab" role="tabpanel">
+                  <form onsubmit="handleLoginSubmit(event)">
+                    <div class="mb-3">
+                      <label class="form-label fw-semibold" style="font-size: 0.82rem;">Email Address</label>
+                      <div class="input-group">
+                        <span class="input-group-text bg-light"><i class="fa-regular fa-envelope text-muted"></i></span>
+                        <input type="email" class="form-control" placeholder="aarav.sharma@example.com" value="aarav.sharma@example.com" required oninput="document.getElementById('signin-email').value = this.value">
+                      </div>
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label fw-semibold" style="font-size: 0.82rem;">Password</label>
+                      <div class="input-group">
+                        <span class="input-group-text bg-light"><i class="fa-solid fa-lock text-muted"></i></span>
+                        <input type="password" class="form-control" placeholder="••••••••" value="password123" required oninput="document.getElementById('signin-password').value = this.value">
+                      </div>
+                      <div class="form-text" style="font-size: 0.75rem;">Default demo password is <code>password123</code>.</div>
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label fw-semibold" style="font-size: 0.82rem;">Account Type</label>
+                      <select class="form-select" onchange="document.getElementById('signin-role').value = this.value">
+                        <option value="student">Student Account</option>
+                        <option value="admin">Administrator / Evaluator</option>
+                      </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 rounded-pill fw-bold py-2 mt-2">
+                      <i class="fa-solid fa-arrow-right-to-bracket me-2"></i> Sign In to ScholarQuest
+                    </button>
+                  </form>
+                </div>
+
+                <!-- Registration Form -->
+                <div class="tab-pane fade" id="page-register-tab" role="tabpanel">
+                  <form onsubmit="handleRegisterSubmit(event)">
+                    <div class="row g-2 mb-2">
+                      <div class="col-sm-6">
+                        <label class="form-label fw-semibold" style="font-size: 0.78rem;">Full Name *</label>
+                        <input type="text" class="form-control form-control-sm" placeholder="Ananya Patel" required oninput="document.getElementById('reg-name').value = this.value">
+                      </div>
+                      <div class="col-sm-6">
+                        <label class="form-label fw-semibold" style="font-size: 0.78rem;">Email Address *</label>
+                        <input type="email" class="form-control form-control-sm" placeholder="ananya.p@college.edu" required oninput="document.getElementById('reg-email').value = this.value">
+                      </div>
+                    </div>
+
+                    <div class="row g-2 mb-2">
+                      <div class="col-sm-6">
+                        <label class="form-label fw-semibold" style="font-size: 0.78rem;">Password *</label>
+                        <input type="password" class="form-control form-control-sm" value="password123" required oninput="document.getElementById('reg-password').value = this.value">
+                      </div>
+                      <div class="col-sm-6">
+                        <label class="form-label fw-semibold" style="font-size: 0.78rem;">Mobile Phone *</label>
+                        <input type="tel" class="form-control form-control-sm" placeholder="+91 98765 00000" required oninput="document.getElementById('reg-phone').value = this.value">
+                      </div>
+                    </div>
+
+                    <div class="row g-2 mb-2">
+                      <div class="col-sm-6">
+                        <label class="form-label fw-semibold" style="font-size: 0.78rem;">Education Level *</label>
+                        <select class="form-select form-select-sm" required onchange="document.getElementById('reg-level').value = this.value">
+                          <option value="Undergraduate">Undergraduate (Degree / B.Tech / MBBS)</option>
+                          <option value="Postgraduate">Postgraduate (Masters / M.Tech / MBA)</option>
+                          <option value="Diploma">Diploma / Polytechnic</option>
+                          <option value="Intermediate">Intermediate (11th & 12th)</option>
+                          <option value="School (9-12)">School (Classes 9th - 12th)</option>
+                        </select>
+                      </div>
+                      <div class="col-sm-6">
+                        <label class="form-label fw-semibold" style="font-size: 0.78rem;">Course & Branch *</label>
+                        <input type="text" class="form-control form-control-sm" placeholder="Computer Science Engineering" required oninput="document.getElementById('reg-course').value = this.value">
+                      </div>
+                    </div>
+
+                    <div class="row g-2 mb-2">
+                      <div class="col-sm-6">
+                        <label class="form-label fw-semibold" style="font-size: 0.78rem;">Academic Marks (%) *</label>
+                        <input type="number" step="0.1" min="0" max="100" class="form-control form-control-sm" placeholder="85.5" required oninput="document.getElementById('reg-marks').value = this.value">
+                      </div>
+                      <div class="col-sm-6">
+                        <label class="form-label fw-semibold" style="font-size: 0.78rem;">CGPA Equivalent</label>
+                        <input type="text" class="form-control form-control-sm" placeholder="8.9" oninput="document.getElementById('reg-cgpa').value = this.value">
+                      </div>
+                    </div>
+
+                    <div class="row g-2 mb-2">
+                      <div class="col-sm-6">
+                        <label class="form-label fw-semibold" style="font-size: 0.78rem;">Annual Family Income (₹) *</label>
+                        <input type="number" class="form-control form-control-sm" placeholder="250000" required oninput="document.getElementById('reg-income').value = this.value">
+                      </div>
+                      <div class="col-sm-6">
+                        <label class="form-label fw-semibold" style="font-size: 0.78rem;">Social Category *</label>
+                        <select class="form-select form-select-sm" required onchange="document.getElementById('reg-category').value = this.value">
+                          <option value="General">General</option>
+                          <option value="OBC">OBC (Other Backward Class)</option>
+                          <option value="SC">SC (Scheduled Caste)</option>
+                          <option value="ST">ST (Scheduled Tribe)</option>
+                          <option value="EWS">EWS (Economically Weaker Section)</option>
+                          <option value="Minority">Minority Communities</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="row g-2 mb-2">
+                      <div class="col-sm-6">
+                        <label class="form-label fw-semibold" style="font-size: 0.78rem;">Gender *</label>
+                        <select class="form-select form-select-sm" required onchange="document.getElementById('reg-gender').value = this.value">
+                          <option value="Female">Female</option>
+                          <option value="Male">Male</option>
+                          <option value="Other">Other</option>
+                        </select>
+                      </div>
+                      <div class="col-sm-6">
+                        <label class="form-label fw-semibold" style="font-size: 0.78rem;">State of Domicile</label>
+                        <input type="text" class="form-control form-control-sm" placeholder="Maharashtra" value="Maharashtra" oninput="document.getElementById('reg-state').value = this.value">
+                      </div>
+                    </div>
+
+                    <div class="row g-2 mb-3">
+                      <div class="col-sm-8">
+                        <label class="form-label fw-semibold" style="font-size: 0.78rem;">College / Institute Name</label>
+                        <input type="text" class="form-control form-control-sm" placeholder="Government Engineering College" oninput="document.getElementById('reg-college').value = this.value">
+                      </div>
+                      <div class="col-sm-4">
+                        <label class="form-label fw-semibold" style="font-size: 0.78rem;">Year of Study</label>
+                        <select class="form-select form-select-sm" onchange="document.getElementById('reg-year').value = this.value">
+                          <option value="1st Year">1st Year</option>
+                          <option value="2nd Year">2nd Year</option>
+                          <option value="3rd Year">3rd Year</option>
+                          <option value="Final Year">Final Year</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100 rounded-pill fw-bold py-2">
+                      <i class="fa-solid fa-user-check me-2"></i> Register Profile & Check Matches
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Personas & Benefits Column -->
+          <div class="col-lg-5">
+            <!-- 1-Click Persona Quick Logins -->
+            <div class="card-custom p-4 mb-4">
+              <h5 class="fw-bold mb-2"><i class="fa-solid fa-bolt text-warning me-2"></i>1-Click Demo Personas</h5>
+              <p class="text-muted" style="font-size: 0.82rem;">Select any pre-configured student profile to test instant scholarship matching:</p>
+              
+              <div class="d-flex flex-column gap-2 mb-3">
+                <button type="button" class="btn btn-outline-primary text-start p-3 rounded-4 d-flex align-items-center justify-content-between" onclick="quickLogin('std-101')">
+                  <div>
+                    <div class="fw-bold">Aarav Sharma</div>
+                    <div class="text-muted" style="font-size: 0.75rem;">UG Engineering • 84.5% • General • ₹3.2L Income</div>
+                  </div>
+                  <span class="badge bg-primary-subtle text-primary">Load &rarr;</span>
+                </button>
+
+                <button type="button" class="btn btn-outline-purple text-start p-3 rounded-4 d-flex align-items-center justify-content-between text-dark" style="border-color: #c084fc;" onclick="quickLogin('std-102')">
+                  <div>
+                    <div class="fw-bold">Priya Verma</div>
+                    <div class="text-muted" style="font-size: 0.75rem;">IT Degree • 88.2% • OBC • Single Girl Child</div>
+                  </div>
+                  <span class="badge bg-purple-subtle text-purple">Load &rarr;</span>
+                </button>
+
+                <button type="button" class="btn btn-outline-warning text-start p-3 rounded-4 d-flex align-items-center justify-content-between text-dark" onclick="quickLogin('std-103')">
+                  <div>
+                    <div class="fw-bold">Rahul Kumar</div>
+                    <div class="text-muted" style="font-size: 0.75rem;">Diploma Engg • 76.0% • SC Quota • ₹1.8L Income</div>
+                  </div>
+                  <span class="badge bg-warning-subtle text-warning">Load &rarr;</span>
+                </button>
+
+                <button type="button" class="btn btn-outline-danger text-start p-3 rounded-4 d-flex align-items-center justify-content-between" onclick="quickLogin('admin')">
+                  <div>
+                    <div class="fw-bold">Admin / Evaluator</div>
+                    <div class="text-muted" style="font-size: 0.75rem;">Full platform control • CRUD scholarships & roster</div>
+                  </div>
+                  <span class="badge bg-danger-subtle text-danger">Open &rarr;</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Value Proposition -->
+            <div class="card-custom p-4 bg-light">
+              <h6 class="fw-bold text-dark mb-2"><i class="fa-solid fa-shield-halved text-success me-2"></i>Why Create a Profile?</h6>
+              <ul class="text-muted ps-3 mb-0" style="font-size: 0.82rem; line-height: 1.8;">
+                <li>Single setup eliminates searching 100+ separate websites</li>
+                <li>Rule-engine verifies qualifying percentiles and quotas</li>
+                <li>Generates personalized document preparation checklists</li>
+                <li>Prevents missed deadlines with automated urgency tracking</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================== -->
+      <!-- MODULE 1: DASHBOARD VIEW -->
+      <!-- ============================================================== -->
+      <section id="view-dashboard" class="content-view">
+        <!-- Hero Welcome Banner -->
+        <div class="p-4 p-lg-5 mb-4 rounded-4 text-white position-relative overflow-hidden" style="background: linear-gradient(135deg, #3730a3 0%, #4f46e5 50%, #7c3aed 100%); box-shadow: 0 10px 25px rgba(79, 70, 229, 0.25);">
+          <div class="row align-items-center position-relative" style="z-index: 2;">
+            <div class="col-lg-8">
+              <span class="badge bg-white text-primary px-3 py-2 rounded-pill fw-bold mb-3" style="font-size: 0.8rem;">
+                <i class="fa-solid fa-sparkles me-1 text-warning"></i> AI-Powered Scholarship Match Engine
+              </span>
+              <h1 class="display-6 fw-bold mb-2">Welcome back, <span id="dash-student-name">Aarav</span>! 👋</h1>
+              <p class="lead mb-4 text-light" style="font-size: 1.05rem; opacity: 0.95;">
+                Your student profile matches <strong class="text-white" id="dash-eligible-highlight">8 high-value scholarships</strong>. Discover funding opportunities, verify your eligibility rules, and never miss an application deadline.
+              </p>
+              <div class="d-flex flex-wrap gap-2">
+                <button class="btn btn-warning px-4 py-2 rounded-pill fw-bold text-dark" onclick="navigateTo('eligibility')">
+                  <i class="fa-solid fa-bullseye me-2"></i> Run Eligibility Checker
+                </button>
+                <button class="btn btn-outline-light px-4 py-2 rounded-pill fw-semibold" onclick="navigateTo('discovery')">
+                  <i class="fa-solid fa-compass me-2"></i> Explore Scholarships
+                </button>
+              </div>
+            </div>
+            <div class="col-lg-4 text-center d-none d-lg-block">
+              <div class="p-3 bg-white bg-opacity-10 backdrop-blur rounded-4 border border-white border-opacity-25 text-start">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <span class="text-light" style="font-size: 0.85rem;">Profile Match Index</span>
+                  <span class="badge bg-success" id="dash-profile-match-badge">94% Fit</span>
+                </div>
+                <div class="progress mb-3" style="height: 8px; background: rgba(255,255,255,0.2);">
+                  <div class="progress-bar bg-success" style="width: 94%;"></div>
+                </div>
+                <div class="text-white-50" style="font-size: 0.8rem;">
+                  <div><strong class="text-white">Course:</strong> <span id="dash-banner-course">B.Tech CSE</span></div>
+                  <div><strong class="text-white">Percentage:</strong> <span id="dash-banner-marks">84.5%</span></div>
+                  <div><strong class="text-white">Category:</strong> <span id="dash-banner-category">General</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4 Key Stat Metrics -->
+        <div class="row g-3 mb-4">
+          <div class="col-sm-6 col-xl-3">
+            <div class="stat-card">
+              <div>
+                <div class="text-muted" style="font-size: 0.85rem; font-weight: 600;">Eligible Schemes</div>
+                <div class="h2 fw-bold text-dark my-1" id="stat-eligible-count">8</div>
+                <div class="text-success" style="font-size: 0.78rem;"><i class="fa-solid fa-circle-check me-1"></i> Based on your criteria</div>
+              </div>
+              <div class="stat-icon emerald">
+                <i class="fa-solid fa-award"></i>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6 col-xl-3">
+            <div class="stat-card">
+              <div>
+                <div class="text-muted" style="font-size: 0.85rem; font-weight: 600;">Tracked Applications</div>
+                <div class="h2 fw-bold text-dark my-1" id="stat-tracked-count">3</div>
+                <div class="text-primary" style="font-size: 0.78rem;"><i class="fa-solid fa-spinner me-1"></i> In progress & submitted</div>
+              </div>
+              <div class="stat-icon indigo">
+                <i class="fa-solid fa-list-check"></i>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6 col-xl-3">
+            <div class="stat-card">
+              <div>
+                <div class="text-muted" style="font-size: 0.85rem; font-weight: 600;">Urgent Deadlines</div>
+                <div class="h2 fw-bold text-dark my-1" id="stat-urgent-deadlines">2</div>
+                <div class="text-danger" style="font-size: 0.78rem;"><i class="fa-solid fa-clock me-1"></i> Closing in &lt; 14 days</div>
+              </div>
+              <div class="stat-icon amber">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6 col-xl-3">
+            <div class="stat-card">
+              <div>
+                <div class="text-muted" style="font-size: 0.85rem; font-weight: 600;">Potential Funding Value</div>
+                <div class="h2 fw-bold text-dark my-1" id="stat-funding-val">₹2.8L+</div>
+                <div class="text-muted" style="font-size: 0.78rem;"><i class="fa-solid fa-indian-rupee-sign me-1"></i> Cumulative grant value</div>
+              </div>
+              <div class="stat-icon blue">
+                <i class="fa-solid fa-hand-holding-dollar"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dashboard Content Grid -->
+        <div class="row g-4">
+          <!-- Top Recommended Scholarships -->
+          <div class="col-lg-8">
+            <div class="card-custom p-4 mb-4">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                  <h4 class="fw-bold mb-1">Top Matching Scholarships</h4>
+                  <p class="text-muted mb-0" style="font-size: 0.85rem;">Personalized for your academic grades, stream, and category</p>
+                </div>
+                <button class="btn btn-sm btn-outline-primary rounded-pill px-3" onclick="navigateTo('discovery')">
+                  View All Catalog <i class="fa-solid fa-arrow-right ms-1"></i>
+                </button>
+              </div>
+
+              <div class="row g-3" id="dash-recommended-container">
+                <!-- Injected by JS -->
+              </div>
+            </div>
+
+            <!-- Application Pipeline Summary -->
+            <div class="card-custom p-4">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="fw-bold mb-0">My Application Progress</h4>
+                <button class="btn btn-sm btn-outline-secondary rounded-pill" onclick="navigateTo('tracker')">Open Tracker Board</button>
+              </div>
+              <div id="dash-applications-mini">
+                <!-- Injected by JS -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Sidebar Widgets -->
+          <div class="col-lg-4">
+            <!-- Upcoming Deadlines Widget -->
+            <div class="card-custom p-4 mb-4">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold mb-0"><i class="fa-regular fa-bell text-warning me-2"></i>Upcoming Deadlines</h5>
+                <button class="btn btn-link btn-sm p-0 text-decoration-none" onclick="navigateTo('deadlines')">Full Calendar</button>
+              </div>
+              <div class="d-flex flex-column gap-3" id="dash-deadlines-widget">
+                <!-- Injected by JS -->
+              </div>
+            </div>
+
+            <!-- Quick Document Status Widget -->
+            <div class="card-custom p-4 mb-4">
+              <h5 class="fw-bold mb-2"><i class="fa-solid fa-file-shield text-primary me-2"></i>Document Readiness</h5>
+              <p class="text-muted" style="font-size: 0.82rem;">Key certificates required across your matched scholarships</p>
+              
+              <div class="d-flex flex-column gap-2" id="dash-docs-widget">
+                <div class="d-flex justify-content-between align-items-center p-2 rounded bg-light">
+                  <span style="font-size: 0.85rem;"><i class="fa-solid fa-id-card text-muted me-2"></i>Aadhaar Card</span>
+                  <span class="badge bg-success-subtle text-success">Verified</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center p-2 rounded bg-light">
+                  <span style="font-size: 0.85rem;"><i class="fa-solid fa-stamp text-muted me-2"></i>Income Certificate</span>
+                  <span class="badge bg-success-subtle text-success">Ready</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center p-2 rounded bg-light">
+                  <span style="font-size: 0.85rem;"><i class="fa-solid fa-graduation-cap text-muted me-2"></i>Bonafide Certificate</span>
+                  <span class="badge bg-warning-subtle text-warning">Requested</span>
+                </div>
+              </div>
+              <button class="btn btn-outline-primary btn-sm w-100 mt-3 rounded-pill" onclick="navigateTo('documents')">
+                Manage Document Checklist
+              </button>
+            </div>
+
+            <!-- How It Works Card -->
+            <div class="card-custom p-4" style="background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 100%); border-color: #bbf7d0;">
+              <h5 class="fw-bold text-success mb-2"><i class="fa-solid fa-circle-check me-2"></i>GrantGlide Process</h5>
+              <ol class="ps-3 mb-0 text-muted" style="font-size: 0.82rem; line-height: 1.8;">
+                <li>Set up student academic profile</li>
+                <li>Instant eligibility diagnostics</li>
+                <li>Prepare unified document checklist</li>
+                <li>Apply on verified official portal</li>
+                <li>Track application progress to grant</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================== -->
+      <!-- MODULE 2 & 3: SCHOLARSHIP DISCOVERY VIEW -->
+      <!-- ============================================================== -->
+      <section id="view-discovery" class="content-view d-none">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
+          <div>
+            <h2 class="fw-bold mb-1">Scholarship Discovery Catalog</h2>
+            <p class="text-muted mb-0">Browse verified national, state, and corporate scholarship schemes</p>
+          </div>
+          <div class="d-flex flex-wrap gap-2 align-items-center">
+            <span class="badge bg-primary px-3 py-2 rounded-pill" id="catalog-count-badge">12 Schemes Available</span>
+            <div class="d-flex align-items-center gap-1">
+              <label class="text-muted small mb-0 d-none d-sm-block">Sort By:</label>
+              <select id="catalog-sort" class="form-select form-select-sm rounded-pill" style="width: auto; font-size: 0.8rem;" onchange="applyFilters()">
+                <option value="deadline_asc">⏳ Closing Soonest</option>
+                <option value="amount_desc">💰 Highest Award Amount</option>
+                <option value="marks_asc">🎯 Lowest % Threshold</option>
+                <option value="name_asc">🔤 Scheme Name (A-Z)</option>
+              </select>
+            </div>
+            <div class="btn-group btn-group-sm" role="group">
+              <button type="button" class="btn btn-outline-secondary active" id="btn-view-grid" onclick="setCatalogLayout('grid')" title="Grid View"><i class="fa-solid fa-table-cells"></i></button>
+              <button type="button" class="btn btn-outline-secondary" id="btn-view-list" onclick="setCatalogLayout('list')" title="List View"><i class="fa-solid fa-list"></i></button>
+            </div>
+            <button class="btn btn-outline-secondary btn-sm rounded-pill" onclick="resetFilters()">
+              <i class="fa-solid fa-arrow-rotate-left me-1"></i> Reset
+            </button>
+          </div>
+        </div>
+
+        <!-- Active Filter Pills Container -->
+        <div id="active-filter-pills" class="d-flex flex-wrap gap-2 mb-3"></div>
+
+        <div class="row g-4">
+          <!-- Left Filters Sidebar -->
+          <div class="col-lg-3">
+            <div class="card-custom p-3 sticky-top" style="top: 80px;">
+              <h5 class="fw-bold mb-3 d-flex justify-content-between align-items-center">
+                <span><i class="fa-solid fa-filter me-2 text-primary"></i>Filters</span>
+              </h5>
+
+              <!-- Keyword Search -->
+              <div class="mb-3">
+                <label class="form-label text-muted fw-semibold" style="font-size: 0.8rem;">Search Keywords</label>
+                <div class="input-group input-group-sm">
+                  <input type="text" id="filter-q" class="form-control" placeholder="Scholarship name, keyword..." oninput="applyFilters()">
+                  <button class="btn btn-outline-secondary" type="button" onclick="applyFilters()"><i class="fa-solid fa-search"></i></button>
+                </div>
+              </div>
+
+              <!-- Provider Type Filter -->
+              <div class="mb-3">
+                <label class="form-label text-muted fw-semibold" style="font-size: 0.8rem;">Scholarship Type</label>
+                <select id="filter-type" class="form-select form-select-sm" onchange="applyFilters()">
+                  <option value="All">All Types</option>
+                  <option value="Government">Government (Central & State)</option>
+                  <option value="Private">Private / Corporate CSR</option>
+                </select>
+              </div>
+
+              <!-- Education Level Filter -->
+              <div class="mb-3">
+                <label class="form-label text-muted fw-semibold" style="font-size: 0.8rem;">Education Level</label>
+                <select id="filter-level" class="form-select form-select-sm" onchange="applyFilters()">
+                  <option value="All">All Levels</option>
+                  <option value="Undergraduate">Undergraduate (B.Tech, B.Sc, B.Com, MBBS)</option>
+                  <option value="Postgraduate">Postgraduate (M.Tech, M.Sc, MBA)</option>
+                  <option value="Diploma">Diploma / Polytechnic</option>
+                  <option value="Intermediate">Intermediate / 10+2</option>
+                  <option value="School (9-12)">School (Classes 9th - 12th)</option>
+                </select>
+              </div>
+
+              <!-- Social Category Filter -->
+              <div class="mb-3">
+                <label class="form-label text-muted fw-semibold" style="font-size: 0.8rem;">Social Category</label>
+                <select id="filter-category" class="form-select form-select-sm" onchange="applyFilters()">
+                  <option value="All">All Categories</option>
+                  <option value="General">General</option>
+                  <option value="OBC">OBC (Other Backward Class)</option>
+                  <option value="SC">SC (Scheduled Caste)</option>
+                  <option value="ST">ST (Scheduled Tribe)</option>
+                  <option value="EWS">EWS (Economically Weaker Section)</option>
+                  <option value="Minority">Minority Communities</option>
+                </select>
+              </div>
+
+              <!-- Gender Filter -->
+              <div class="mb-3">
+                <label class="form-label text-muted fw-semibold" style="font-size: 0.8rem;">Gender</label>
+                <select id="filter-gender" class="form-select form-select-sm" onchange="applyFilters()">
+                  <option value="All">Any Gender</option>
+                  <option value="Female">Female Candidates Only</option>
+                  <option value="Male">Male / All</option>
+                </select>
+              </div>
+
+              <!-- State / Domicile Filter -->
+              <div class="mb-3">
+                <label class="form-label text-muted fw-semibold" style="font-size: 0.8rem;">State / Domicile</label>
+                <select id="filter-state" class="form-select form-select-sm" onchange="applyFilters()">
+                  <option value="All">All States & Central Schemes</option>
+                  <option value="Central">All-India Central Schemes</option>
+                  <option value="Maharashtra">Maharashtra</option>
+                  <option value="Uttar Pradesh">Uttar Pradesh</option>
+                  <option value="Delhi">Delhi / NCR</option>
+                  <option value="Karnataka">Karnataka</option>
+                  <option value="Tamil Nadu">Tamil Nadu</option>
+                  <option value="Madhya Pradesh">Madhya Pradesh</option>
+                </select>
+              </div>
+
+              <!-- Family Income Max Slider -->
+              <div class="mb-3">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <label class="form-label text-muted fw-semibold mb-0" style="font-size: 0.8rem;">Family Annual Income</label>
+                  <span class="text-primary fw-bold" style="font-size: 0.78rem;" id="filter-income-val">No Limit</span>
+                </div>
+                <input type="range" class="form-range" id="filter-income" min="100000" max="1500000" step="50000" value="1500000" oninput="updateIncomeFilterLabel(this.value)">
+                <div class="d-flex justify-content-between text-muted" style="font-size: 0.7rem;">
+                  <span>₹1 Lakh</span>
+                  <span>₹8 Lakh</span>
+                  <span>₹15 Lakh+</span>
+                </div>
+              </div>
+
+              <!-- Quick action to match current student -->
+              <button class="btn btn-primary w-100 btn-sm rounded-pill mt-2" onclick="matchCurrentStudentFilters()">
+                <i class="fa-solid fa-user-check me-1"></i> Match My Profile Only
+              </button>
+            </div>
+          </div>
+
+          <!-- Right Scholarships Grid -->
+          <div class="col-lg-9">
+            <div class="row g-3" id="scholarship-catalog-grid">
+              <!-- Injected by JS -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================== -->
+      <!-- MODULE 4: SMART ELIGIBILITY CHECKER VIEW -->
+      <!-- ============================================================== -->
+      <section id="view-eligibility" class="content-view d-none">
+        <div class="mb-4">
+          <h2 class="fw-bold mb-1">Smart Eligibility Checker & Rule Evaluator</h2>
+          <p class="text-muted mb-0">Our rule engine tests your academic grades, category, and household income against every scholarship's strict eligibility criteria.</p>
+        </div>
+
+        <div class="row g-4">
+          <!-- Student Input Parameters Form -->
+          <div class="col-lg-4">
+            <div class="card-custom p-4 sticky-top" style="top: 80px;">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold mb-0"><i class="fa-solid fa-user-pen text-primary me-2"></i>Student Parameters</h5>
+                <button class="btn btn-link btn-sm p-0 text-decoration-none" onclick="loadSavedProfileIntoChecker()">Load Saved Profile</button>
+              </div>
+
+              <form id="eligibility-checker-form" onsubmit="runEligibilityCheck(event)">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold" style="font-size: 0.8rem;">Current Education Level</label>
+                  <select id="chk-level" class="form-select form-select-sm" required>
+                    <option value="Undergraduate">Undergraduate (Degree / B.Tech / MBBS / B.Sc)</option>
+                    <option value="Postgraduate">Postgraduate (Masters / M.Tech / MBA)</option>
+                    <option value="Diploma">Diploma / Polytechnic</option>
+                    <option value="Intermediate">Intermediate (11th & 12th)</option>
+                    <option value="School (9-12)">Secondary School (9th & 10th)</option>
+                  </select>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label fw-semibold" style="font-size: 0.8rem;">Stream / Course</label>
+                  <input type="text" id="chk-course" class="form-control form-control-sm" value="Computer Science Engineering" required>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label fw-semibold" style="font-size: 0.8rem;">Aggregate Percentage / Marks (%)</label>
+                  <div class="input-group input-group-sm">
+                    <input type="number" step="0.1" min="0" max="100" id="chk-percentage" class="form-control" value="84.5" required>
+                    <span class="input-group-text">%</span>
+                  </div>
+                  <div class="form-text" style="font-size: 0.72rem;">Last completed qualifying board or semester examination</div>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label fw-semibold" style="font-size: 0.8rem;">Annual Family Household Income (₹)</label>
+                  <input type="number" id="chk-income" class="form-control form-control-sm" value="320000" step="10000" required>
+                  <div class="form-text" style="font-size: 0.72rem;">Gross annual income as per Tehsildar / ITR certificate</div>
+                </div>
+
+                <div class="row g-2 mb-3">
+                  <div class="col-6">
+                    <label class="form-label fw-semibold" style="font-size: 0.8rem;">Category</label>
+                    <select id="chk-category" class="form-select form-select-sm">
+                      <option value="General">General</option>
+                      <option value="OBC">OBC</option>
+                      <option value="SC">SC</option>
+                      <option value="ST">ST</option>
+                      <option value="EWS">EWS</option>
+                      <option value="Minority">Minority</option>
+                    </select>
+                  </div>
+                  <div class="col-6">
+                    <label class="form-label fw-semibold" style="font-size: 0.8rem;">Gender</label>
+                    <select id="chk-gender" class="form-select form-select-sm">
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <div class="form-check form-switch mb-1">
+                    <input class="form-check-input" type="checkbox" id="chk-single-girl">
+                    <label class="form-check-label" for="chk-single-girl" style="font-size: 0.8rem;">Single Girl Child in family</label>
+                  </div>
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="chk-pwd">
+                    <label class="form-check-label" for="chk-pwd" style="font-size: 0.8rem;">Person with Benchmark Disability (PwD &ge;40%)</label>
+                  </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 rounded-pill fw-bold">
+                  <i class="fa-solid fa-microchip me-2"></i> Analyze My Eligibility
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Diagnostic Results Output -->
+          <div class="col-lg-8">
+            <!-- Results Summary Banner -->
+            <div class="card-custom p-4 mb-4" id="eligibility-summary-card">
+              <div class="row align-items-center">
+                <div class="col-md-7">
+                  <h4 class="fw-bold mb-1">Diagnostic Report</h4>
+                  <p class="text-muted mb-0" style="font-size: 0.88rem;">
+                    Analysis completed across <strong>12 active scholarship schemes</strong>.
+                  </p>
+                </div>
+                <div class="col-md-5 mt-3 mt-md-0 d-flex gap-2 justify-content-md-end">
+                  <div class="text-center px-3 py-2 rounded bg-success-subtle border border-success">
+                    <div class="h4 fw-bold text-success mb-0" id="summary-fully-count">5</div>
+                    <div class="text-success" style="font-size: 0.72rem; font-weight: 600;">100% Match</div>
+                  </div>
+                  <div class="text-center px-3 py-2 rounded bg-warning-subtle border border-warning">
+                    <div class="h4 fw-bold text-warning mb-0" id="summary-partial-count">3</div>
+                    <div class="text-warning" style="font-size: 0.72rem; font-weight: 600;">Partial Match</div>
+                  </div>
+                  <div class="text-center px-3 py-2 rounded bg-danger-subtle border border-danger">
+                    <div class="h4 fw-bold text-danger mb-0" id="summary-ineligible-count">4</div>
+                    <div class="text-danger" style="font-size: 0.72rem; font-weight: 600;">Ineligible</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Interactive What-If Eligibility Simulator -->
+            <div class="card-custom p-4 mb-4 bg-light border">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                  <h5 class="fw-bold mb-1 text-dark"><i class="fa-solid fa-sliders text-primary me-2"></i>What-If Eligibility Calculator</h5>
+                  <p class="text-muted small mb-0">Drag sliders to test how score improvements or income slabs unlock more scholarship opportunities.</p>
+                </div>
+                <span class="badge bg-primary rounded-pill px-3 py-1">Real-Time Simulation</span>
+              </div>
+              <div class="row g-3 align-items-center">
+                <div class="col-md-6">
+                  <div class="d-flex justify-content-between small fw-bold mb-1">
+                    <span>Simulated Marks: <span id="sim-marks-val" class="text-primary">85%</span></span>
+                  </div>
+                  <input type="range" class="form-range" min="50" max="100" step="1" id="sim-marks-slider" value="85" oninput="handleSimulateWhatIf()">
+                </div>
+                <div class="col-md-6">
+                  <div class="d-flex justify-content-between small fw-bold mb-1">
+                    <span>Simulated Family Income: <span id="sim-income-val" class="text-primary">₹3,00,000 / yr</span></span>
+                  </div>
+                  <input type="range" class="form-range" min="100000" max="1500000" step="50000" id="sim-income-slider" value="300000" oninput="handleSimulateWhatIf()">
+                </div>
+              </div>
+              <div class="mt-3 p-2 rounded bg-white border text-center" id="sim-unlocked-message" style="font-size: 0.85rem;">
+                <i class="fa-solid fa-sparkles text-warning me-1"></i> At <strong>85%</strong> and <strong>₹3,00,000/yr</strong>, you qualify for <strong>8 scholarships</strong> worth <strong>₹2,80,000+</strong>.
+              </div>
+            </div>
+
+            <!-- Detailed Scholarship Breakdown Cards -->
+            <div class="d-flex flex-column gap-3" id="eligibility-results-list">
+              <!-- Injected by JS -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================== -->
+      <!-- MODULE 5: APPLICATION GUIDANCE VIEW -->
+      <!-- ============================================================== -->
+      <section id="view-guidance" class="content-view d-none">
+        <div class="mb-4">
+          <h2 class="fw-bold mb-1">Scholarship Application Guidance & Procedures</h2>
+          <p class="text-muted mb-0">Follow this standardized 5-step roadmap to successfully complete applications on official government and private portals without rejection.</p>
+        </div>
+
+        <div class="row g-4 mb-5">
+          <!-- Step 1 -->
+          <div class="col-md-6 col-lg-4">
+            <div class="card-custom p-4 h-100">
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold" style="width: 40px; height: 40px; font-size: 1.1rem;">1</div>
+                <h5 class="fw-bold mb-0">Profile & DigiLocker</h5>
+              </div>
+              <p class="text-muted" style="font-size: 0.88rem;">
+                Keep your DigiLocker account synced with your Aadhaar, Class 10/12 marksheets, and domicile certificate. Almost all portals now use DigiLocker API for instant e-KYC.
+              </p>
+              <div class="p-2 rounded bg-light border" style="font-size: 0.78rem;">
+                <strong>Pro Tip:</strong> Student name spelling on Aadhaar and Marksheet MUST be identical.
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="col-md-6 col-lg-4">
+            <div class="card-custom p-4 h-100">
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold" style="width: 40px; height: 40px; font-size: 1.1rem;">2</div>
+                <h5 class="fw-bold mb-0">Portal Registration</h5>
+              </div>
+              <p class="text-muted" style="font-size: 0.88rem;">
+                Register on National Scholarship Portal (NSP), State e-Grantz, or corporate CSR portals. Obtain your One-Time Registration (OTR) number.
+              </p>
+              <div class="p-2 rounded bg-light border" style="font-size: 0.78rem;">
+                <strong>Pro Tip:</strong> Use an active mobile number that is linked to your Aadhaar card for OTPs.
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="col-md-6 col-lg-4">
+            <div class="card-custom p-4 h-100">
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold" style="width: 40px; height: 40px; font-size: 1.1rem;">3</div>
+                <h5 class="fw-bold mb-0">Document Upload</h5>
+              </div>
+              <p class="text-muted" style="font-size: 0.88rem;">
+                Upload Income Certificate (issued by Tehsildar/SDM for current financial year), Bonafide certificate signed by college principal, and fee receipts.
+              </p>
+              <div class="p-2 rounded bg-light border" style="font-size: 0.78rem;">
+                <strong>Pro Tip:</strong> PDF size must be under 200 KB and clearly legible.
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="col-md-6 col-lg-4">
+            <div class="card-custom p-4 h-100">
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold" style="width: 40px; height: 40px; font-size: 1.1rem;">4</div>
+                <h5 class="fw-bold mb-0">Institute Verification</h5>
+              </div>
+              <p class="text-muted" style="font-size: 0.88rem;">
+                Submit the printed confirmation copy and fee receipts to your college/school Scholarship Nodal Officer for electronic verification on the portal.
+              </p>
+              <div class="p-2 rounded bg-light border" style="font-size: 0.78rem;">
+                <strong>Pro Tip:</strong> College verification deadline is usually 7 days after student submission!
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 5 -->
+          <div class="col-md-6 col-lg-4">
+            <div class="card-custom p-4 h-100">
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold" style="width: 40px; height: 40px; font-size: 1.1rem;">5</div>
+                <h5 class="fw-bold mb-0">DBT Bank Seeding</h5>
+              </div>
+              <p class="text-muted" style="font-size: 0.88rem;">
+                Scholarship funds are directly transferred via Aadhaar Enabled Payment System (AePS) / PFMS. Ensure your bank account is seeded with NPCI.
+              </p>
+              <div class="p-2 rounded bg-light border" style="font-size: 0.78rem;">
+                <strong>Pro Tip:</strong> Check your bank seeding status on the UIDAI portal under 'Check Aadhaar Bank Seeding'.
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 6 -->
+          <div class="col-md-6 col-lg-4">
+            <div class="card-custom p-4 h-100" style="background: linear-gradient(145deg, #f0fdf4 0%, #ffffff 100%);">
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center fw-bold" style="width: 40px; height: 40px; font-size: 1.1rem;"><i class="fa-solid fa-check"></i></div>
+                <h5 class="fw-bold text-success mb-0">Disbursement & Renewal</h5>
+              </div>
+              <p class="text-muted" style="font-size: 0.88rem;">
+                Track your PFMS payment reference number. Most scholarships allow annual renewal by maintaining a minimum 60% mark in every college semester.
+              </p>
+              <button class="btn btn-sm btn-outline-success rounded-pill mt-2 w-100" onclick="navigateTo('tracker')">
+                Track Applications Here
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Official Portal Directory -->
+        <div class="card-custom p-4">
+          <h4 class="fw-bold mb-3"><i class="fa-solid fa-globe text-primary me-2"></i>Official Verified Application Portals</h4>
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>Portal Name</th>
+                  <th>Authority / Organization</th>
+                  <th>Coverage</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>National Scholarship Portal (NSP)</strong></td>
+                  <td>Ministry of Electronics & IT / Education (Govt. of India)</td>
+                  <td><span class="badge bg-primary-subtle text-primary">Central Schemes, AICTE, UGC</span></td>
+                  <td><a href="https://scholarships.gov.in/" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill">Open Portal <i class="fa-solid fa-arrow-up-right-from-square ms-1"></i></a></td>
+                </tr>
+                <tr>
+                  <td><strong>AICTE Portal</strong></td>
+                  <td>All India Council for Technical Education</td>
+                  <td><span class="badge bg-purple-subtle text-dark">Pragati, Saksham, Swanath</span></td>
+                  <td><a href="https://www.aicte-india.org/" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill">Open Portal <i class="fa-solid fa-arrow-up-right-from-square ms-1"></i></a></td>
+                </tr>
+                <tr>
+                  <td><strong>Vidyasaarathi Portal</strong></td>
+                  <td>NSDL e-Governance Infrastructure Ltd</td>
+                  <td><span class="badge bg-success-subtle text-success">ACC, Tata, JSW Corporate CSR</span></td>
+                  <td><a href="https://www.vidyasaarathi.co.in/" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill">Open Portal <i class="fa-solid fa-arrow-up-right-from-square ms-1"></i></a></td>
+                </tr>
+                <tr>
+                  <td><strong>Buddy4Study CSR Engine</strong></td>
+                  <td>Buddy4Study Education Foundation</td>
+                  <td><span class="badge bg-warning-subtle text-warning">HDFC, Rolls-Royce, Colgate</span></td>
+                  <td><a href="https://www.buddy4study.com/" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill">Open Portal <i class="fa-solid fa-arrow-up-right-from-square ms-1"></i></a></td>
+                </tr>
+                <tr>
+                  <td><strong>INSPIRE Online Portal</strong></td>
+                  <td>Department of Science and Technology (DST)</td>
+                  <td><span class="badge bg-info-subtle text-info">INSPIRE SHE Science Fellowships</span></td>
+                  <td><a href="https://online-inspire.gov.in/" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill">Open Portal <i class="fa-solid fa-arrow-up-right-from-square ms-1"></i></a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Frequently Asked Questions & Rejection Prevention -->
+        <div class="card-custom p-4 mt-4">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+              <h4 class="fw-bold mb-1"><i class="fa-solid fa-circle-question text-primary me-2"></i>Scholarship Application FAQs & Rules</h4>
+              <p class="text-muted mb-0" style="font-size: 0.85rem;">Essential knowledge for students applying on NSP, state e-District, and CSR portals</p>
+            </div>
+            <span class="badge bg-light text-muted border px-3 py-2 rounded-pill">5 Key Guidelines</span>
+          </div>
+
+          <div class="accordion accordion-flush" id="guidanceAccordion">
+            <div class="accordion-item border rounded-3 mb-2">
+              <h2 class="accordion-header" id="faq-heading-1">
+                <button class="accordion-button collapsed fw-semibold py-3" type="button" data-bs-toggle="collapse" data-bs-target="#faq-collapse-1" aria-expanded="false">
+                  1. Can I receive more than one scholarship at the same time?
+                </button>
+              </h2>
+              <div id="faq-collapse-1" class="accordion-collapse collapse" data-bs-parent="#guidanceAccordion">
+                <div class="accordion-body text-muted" style="font-size: 0.88rem; line-height: 1.7;">
+                  Under Government of India guidelines, a student cannot receive two <strong>Central/State government scholarships</strong> simultaneously covering the same tuition fees. However, students <em>can</em> combine a government scholarship with a private foundation CSR grant, merit prize, or fee concession, unless the scheme rules explicitly forbid external financial aid.
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item border rounded-3 mb-2">
+              <h2 class="accordion-header" id="faq-heading-2">
+                <button class="accordion-button collapsed fw-semibold py-3" type="button" data-bs-toggle="collapse" data-bs-target="#faq-collapse-2" aria-expanded="false">
+                  2. What is an OTR (One-Time Registration) number on NSP?
+                </button>
+              </h2>
+              <div id="faq-collapse-2" class="accordion-collapse collapse" data-bs-parent="#guidanceAccordion">
+                <div class="accordion-body text-muted" style="font-size: 0.88rem; line-height: 1.7;">
+                  The OTR is a unique 14-digit identifier generated via Aadhaar biometric or face authentication. Once created, it stays with the applicant through School, Diploma, Undergraduate, and Postgraduate studies, eliminating redundant annual registrations.
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item border rounded-3 mb-2">
+              <h2 class="accordion-header" id="faq-heading-3">
+                <button class="accordion-button collapsed fw-semibold py-3" type="button" data-bs-toggle="collapse" data-bs-target="#faq-collapse-3" aria-expanded="false">
+                  3. How do I verify my bank account is NPCI / DBT mapped?
+                </button>
+              </h2>
+              <div id="faq-collapse-3" class="accordion-collapse collapse" data-bs-parent="#guidanceAccordion">
+                <div class="accordion-body text-muted" style="font-size: 0.88rem; line-height: 1.7;">
+                  Simply opening a bank account is not enough for Direct Benefit Transfer (DBT). You must submit an <em>"Aadhaar NPCI Mapping Form"</em> to your bank branch. The bank maps your Aadhaar number in the NPCI server to enable automatic scholarship disbursement via PFMS.
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item border rounded-3 mb-2">
+              <h2 class="accordion-header" id="faq-heading-4">
+                <button class="accordion-button collapsed fw-semibold py-3" type="button" data-bs-toggle="collapse" data-bs-target="#faq-collapse-4" aria-expanded="false">
+                  4. Can Diploma and Polytechnic students apply for degree engineering scholarships?
+                </button>
+              </h2>
+              <div id="faq-collapse-4" class="accordion-collapse collapse" data-bs-parent="#guidanceAccordion">
+                <div class="accordion-body text-muted" style="font-size: 0.88rem; line-height: 1.7;">
+                  Yes! Lateral entry diploma holders enrolled directly into the 2nd year of B.Tech / B.E. qualify for major schemes such as AICTE Pragati, Saksham, and Reliance Foundation. Use GrantGlide's filter to select <strong>"Diploma"</strong> to view targeted diploma schemes.
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item border rounded-3">
+              <h2 class="accordion-header" id="faq-heading-5">
+                <button class="accordion-button collapsed fw-semibold py-3" type="button" data-bs-toggle="collapse" data-bs-target="#faq-collapse-5" aria-expanded="false">
+                  5. What if my college verification is delayed?
+                </button>
+              </h2>
+              <div id="faq-collapse-5" class="accordion-collapse collapse" data-bs-parent="#guidanceAccordion">
+                <div class="accordion-body text-muted" style="font-size: 0.88rem; line-height: 1.7;">
+                  Colleges have a designated Scholarship Nodal Officer with an AISHE login. Always submit your printed application acknowledgement and fee receipts immediately after online submission. Institute verification usually closes 7 to 10 days after the student deadline.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================== -->
+      <!-- MODULE 6: DOCUMENT MANAGEMENT & CHECKLIST VIEW -->
+      <!-- ============================================================== -->
+      <section id="view-documents" class="content-view d-none">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
+          <div>
+            <h2 class="fw-bold mb-1">Document Assistance & Checklist</h2>
+            <p class="text-muted mb-0">Generate a personalized document checklist, learn how to obtain each certificate, and avoid common rejection causes.</p>
+          </div>
+          <button class="btn btn-outline-primary rounded-pill" onclick="window.print()">
+            <i class="fa-solid fa-print me-1"></i> Print / Save as PDF Checklist
+          </button>
+        </div>
+
+        <div class="row g-4">
+          <div class="col-lg-8">
+            <!-- Document Readiness Scorecard -->
+            <div class="card-custom p-4 mb-4" id="doc-readiness-banner">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <div>
+                  <h5 class="fw-bold mb-0"><i class="fa-solid fa-file-circle-check text-success me-2"></i>Document Readiness Index</h5>
+                  <div class="text-muted" style="font-size: 0.82rem;">Overall certificate preparation across your eligible scholarships</div>
+                </div>
+                <span class="badge bg-success px-3 py-2 rounded-pill h6 mb-0" id="doc-readiness-percentage">75% Ready</span>
+              </div>
+              <div class="progress mb-2" style="height: 10px; border-radius: 9999px;">
+                <div class="progress-bar bg-success" id="doc-readiness-bar" role="progressbar" style="width: 75%;"></div>
+              </div>
+              <div class="d-flex justify-content-between text-muted" style="font-size: 0.78rem;">
+                <span id="doc-ready-count"><i class="fa-solid fa-circle-check text-success me-1"></i>6 Ready</span>
+                <span id="doc-pending-count"><i class="fa-solid fa-clock text-warning me-1"></i>2 In Progress / Missing</span>
+              </div>
+            </div>
+
+            <div id="documents-master-container">
+              <!-- Injected by JS -->
+            </div>
+          </div>
+
+          <!-- Document Tips & Summary -->
+          <div class="col-lg-4">
+            <div class="card-custom p-4 mb-4 sticky-top" style="top: 80px;">
+              <h5 class="fw-bold mb-3"><i class="fa-solid fa-triangle-exclamation text-warning me-2"></i>Top 4 Rejection Traps</h5>
+              
+              <div class="mb-3">
+                <div class="fw-bold text-dark" style="font-size: 0.88rem;">1. Expired Financial Year Income Proof</div>
+                <p class="text-muted mb-0" style="font-size: 0.8rem;">Income certificates must be issued after April 1st of the current fiscal year. Older certificates lead to immediate rejection.</p>
+              </div>
+
+              <div class="mb-3">
+                <div class="fw-bold text-dark" style="font-size: 0.88rem;">2. Mismatched Name in Bank Account</div>
+                <p class="text-muted mb-0" style="font-size: 0.8rem;">Account must be in student's name, not joint account with parent (unless explicitly allowed), and linked with Aadhaar NPCI mapper.</p>
+              </div>
+
+              <div class="mb-3">
+                <div class="fw-bold text-dark" style="font-size: 0.88rem;">3. Missing Stamp on Bonafide</div>
+                <p class="text-muted mb-0" style="font-size: 0.8rem;">Every bonafide certificate must have the college round seal and registrar's signature with current academic year mentioned.</p>
+              </div>
+
+              <div>
+                <div class="fw-bold text-dark" style="font-size: 0.88rem;">4. Unofficial Online Marksheets</div>
+                <p class="text-muted mb-0" style="font-size: 0.8rem;">Provisional marks printed from the web must be physically counter-signed and stamped by the college principal.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================== -->
+      <!-- MODULE 7: DEADLINES & CALENDAR VIEW -->
+      <!-- ============================================================== -->
+      <section id="view-deadlines" class="content-view d-none">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
+          <div>
+            <h2 class="fw-bold mb-1">Scholarship Deadlines & Calendar</h2>
+            <p class="text-muted mb-0">Track upcoming closing dates, view countdown timers, and set reminders so you never miss an application deadline.</p>
+          </div>
+          <button class="btn btn-warning rounded-pill fw-bold text-dark" onclick="simulateDeadlineAlert()">
+            <i class="fa-solid fa-bell me-1"></i> Test Email/SMS Reminder Alert
+          </button>
+        </div>
+
+        <div class="row g-4">
+          <!-- Left Column: Deadlines by Urgency -->
+          <div class="col-lg-7">
+            <!-- Urgent Section (< 7 days) -->
+            <div class="mb-4">
+              <h5 class="fw-bold text-danger mb-3 d-flex align-items-center gap-2">
+                <i class="fa-solid fa-circle-exclamation"></i> Closing Urgently (Within 7 Days)
+              </h5>
+              <div class="d-flex flex-column gap-3" id="deadlines-urgent-container">
+                <!-- Injected by JS -->
+              </div>
+            </div>
+
+            <!-- Approaching Section (7 - 21 days) -->
+            <div class="mb-4">
+              <h5 class="fw-bold text-warning mb-3 d-flex align-items-center gap-2">
+                <i class="fa-solid fa-clock"></i> Approaching Deadlines (7 to 21 Days)
+              </h5>
+              <div class="d-flex flex-column gap-3" id="deadlines-approaching-container">
+                <!-- Injected by JS -->
+              </div>
+            </div>
+
+            <!-- Active Section (> 21 days) -->
+            <div>
+              <h5 class="fw-bold text-success mb-3 d-flex align-items-center gap-2">
+                <i class="fa-solid fa-calendar-check"></i> Open & Active (21+ Days Remaining)
+              </h5>
+              <div class="d-flex flex-column gap-3" id="deadlines-active-container">
+                <!-- Injected by JS -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Interactive Month Calendar -->
+          <div class="col-lg-5">
+            <div class="card-custom p-4 sticky-top" style="top: 80px;">
+              <h5 class="fw-bold mb-3"><i class="fa-regular fa-calendar-days text-primary me-2"></i>November / December 2026 Deadlines</h5>
+              
+              <div class="table-responsive text-center mb-3">
+                <table class="table table-bordered mb-0" style="font-size: 0.85rem;">
+                  <thead class="table-light">
+                    <tr>
+                      <th class="text-muted">Mo</th>
+                      <th class="text-muted">Tu</th>
+                      <th class="text-muted">We</th>
+                      <th class="text-muted">Th</th>
+                      <th class="text-muted">Fr</th>
+                      <th class="text-muted text-danger">Sa</th>
+                      <th class="text-muted text-danger">Su</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="text-muted">16</td>
+                      <td class="text-muted">17</td>
+                      <td class="text-muted">18</td>
+                      <td class="text-muted">19</td>
+                      <td class="text-muted">20</td>
+                      <td class="text-muted">21</td>
+                      <td class="table-danger fw-bold" style="cursor: pointer;" onclick="viewScholarshipDetails('sch-005')" title="Click to view: HDFC Parivartan Deadline (Nov 22)">22 🔴</td>
+                    </tr>
+                    <tr>
+                      <td class="text-muted">23</td>
+                      <td class="text-muted">24</td>
+                      <td class="table-warning fw-bold" style="cursor: pointer;" onclick="viewScholarshipDetails('sch-003')" title="Click to view: Reliance Foundation Deadline (Nov 25)">25 🟡</td>
+                      <td class="text-muted">26</td>
+                      <td class="text-muted">27</td>
+                      <td class="table-warning fw-bold" style="cursor: pointer;" onclick="viewScholarshipDetails('sch-008')" title="Click to view: Begum Hazrat Mahal (Nov 28)">28 🟡</td>
+                      <td class="text-muted">29</td>
+                    </tr>
+                    <tr>
+                      <td class="table-danger fw-bold" style="cursor: pointer;" onclick="viewScholarshipDetails('sch-002')" title="Click to view: AICTE Pragati & Saksham (Nov 30)">30 🔴</td>
+                      <td class="text-muted">1</td>
+                      <td class="table-info fw-bold" style="cursor: pointer;" onclick="viewScholarshipDetails('sch-006')" title="Click to view: ACC Vidyasaarathi (Dec 2)">2 🟢</td>
+                      <td class="text-muted">3</td>
+                      <td class="text-muted">4</td>
+                      <td class="table-info fw-bold" style="cursor: pointer;" onclick="viewScholarshipDetails('sch-004')" title="Click to view: Tata Trusts (Dec 5)">5 🟢</td>
+                      <td class="text-muted">6</td>
+                    </tr>
+                    <tr>
+                      <td class="text-muted">7</td>
+                      <td class="text-muted">8</td>
+                      <td class="text-muted">9</td>
+                      <td class="table-info fw-bold" style="cursor: pointer;" onclick="viewScholarshipDetails('sch-009')" title="Click to view: Adobe WIT (Dec 10)">10 🟢</td>
+                      <td class="text-muted">11</td>
+                      <td class="text-muted">12</td>
+                      <td class="text-muted">13</td>
+                    </tr>
+                    <tr>
+                      <td class="text-muted">14</td>
+                      <td class="table-info fw-bold" style="cursor: pointer;" onclick="viewScholarshipDetails('sch-001')" title="Click to view: NSP Central Sector (Dec 15)">15 🟢</td>
+                      <td class="text-muted">16</td>
+                      <td class="text-muted">17</td>
+                      <td class="text-muted">18</td>
+                      <td class="text-muted">19</td>
+                      <td class="table-info fw-bold" style="cursor: pointer;" onclick="viewScholarshipDetails('sch-007')" title="Click to view: INSPIRE SHE (Dec 20)">20 🟢</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="p-3 rounded bg-light border" style="font-size: 0.8rem;">
+                <div class="d-flex align-items-center gap-2 mb-1">
+                  <span>🔴</span> <strong>Urgent:</strong> Closing in less than 7 days
+                </div>
+                <div class="d-flex align-items-center gap-2 mb-1">
+                  <span>🟡</span> <strong>Approaching:</strong> Closing in 7 to 20 days
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  <span>🟢</span> <strong>Active:</strong> Closing in 20+ days
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================== -->
+      <!-- MODULE 6 & 7: APPLICATION TRACKER (KANBAN) -->
+      <!-- ============================================================== -->
+      <section id="view-tracker" class="content-view d-none">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
+          <div>
+            <h2 class="fw-bold mb-1">Application Progress Tracker</h2>
+            <p class="text-muted mb-0">Manage and track your scholarship applications through every milestone from saved to awarded.</p>
+          </div>
+          <div class="d-flex gap-2">
+            <button class="btn btn-outline-dark rounded-pill btn-sm px-3 fw-semibold" onclick="openApplicationDossier()">
+              <i class="fa-solid fa-file-invoice me-1 text-primary"></i> Print Application Dossier
+            </button>
+            <button class="btn btn-primary rounded-pill btn-sm px-3" onclick="navigateTo('discovery')">
+              <i class="fa-solid fa-plus me-1"></i> Add Scholarship to Tracker
+            </button>
+          </div>
+        </div>
+
+        <!-- Kanban Board Pipeline -->
+        <div class="kanban-board">
+          <!-- 1. Saved -->
+          <div class="kanban-col">
+            <div class="kanban-col-header">
+              <span class="fw-bold text-dark" style="font-size: 0.9rem;"><i class="fa-regular fa-bookmark me-1 text-secondary"></i> Saved</span>
+              <span class="badge bg-secondary-subtle text-secondary" id="col-count-saved">0</span>
+            </div>
+            <div class="kanban-cards-container" id="kanban-saved">
+              <!-- Injected by JS -->
+            </div>
+          </div>
+
+          <!-- 2. In Progress -->
+          <div class="kanban-col">
+            <div class="kanban-col-header">
+              <span class="fw-bold text-dark" style="font-size: 0.9rem;"><i class="fa-solid fa-pen-ruler me-1 text-warning"></i> In Progress</span>
+              <span class="badge bg-warning-subtle text-warning" id="col-count-progress">0</span>
+            </div>
+            <div class="kanban-cards-container" id="kanban-progress">
+              <!-- Injected by JS -->
+            </div>
+          </div>
+
+          <!-- 3. Submitted -->
+          <div class="kanban-col">
+            <div class="kanban-col-header">
+              <span class="fw-bold text-dark" style="font-size: 0.9rem;"><i class="fa-solid fa-paper-plane me-1 text-primary"></i> Submitted</span>
+              <span class="badge bg-primary-subtle text-primary" id="col-count-submitted">0</span>
+            </div>
+            <div class="kanban-cards-container" id="kanban-submitted">
+              <!-- Injected by JS -->
+            </div>
+          </div>
+
+          <!-- 4. Under Review -->
+          <div class="kanban-col">
+            <div class="kanban-col-header">
+              <span class="fw-bold text-dark" style="font-size: 0.9rem;"><i class="fa-solid fa-magnifying-glass-arrow-right me-1 text-info"></i> Under Review</span>
+              <span class="badge bg-info-subtle text-info" id="col-count-review">0</span>
+            </div>
+            <div class="kanban-cards-container" id="kanban-review">
+              <!-- Injected by JS -->
+            </div>
+          </div>
+
+          <!-- 5. Awarded -->
+          <div class="kanban-col">
+            <div class="kanban-col-header">
+              <span class="fw-bold text-dark" style="font-size: 0.9rem;"><i class="fa-solid fa-trophy me-1 text-success"></i> Awarded</span>
+              <span class="badge bg-success-subtle text-success" id="col-count-awarded">0</span>
+            </div>
+            <div class="kanban-cards-container" id="kanban-awarded">
+              <!-- Injected by JS -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================== -->
+      <!-- MODULE 8: ADMIN MANAGEMENT PANEL -->
+      <!-- ============================================================== -->
+      <section id="view-admin" class="content-view d-none">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
+          <div>
+            <span class="badge bg-danger px-3 py-1 rounded-pill mb-1">Administrative Control Center</span>
+            <h2 class="fw-bold mb-1">Admin Scholarship & Student Monitor</h2>
+            <p class="text-muted mb-0">Add, update, or remove scholarship records and monitor student registrations.</p>
+          </div>
+          <button class="btn btn-primary rounded-pill" onclick="openAddScholarshipModal()">
+            <i class="fa-solid fa-plus me-1"></i> Add New Scholarship
+          </button>
+        </div>
+
+        <!-- Admin Tabs -->
+        <ul class="nav nav-pills mb-4" id="admin-tabs">
+          <li class="nav-item">
+            <a class="nav-link active" href="#admin-scholarships" onclick="switchAdminTab('scholarships')">
+              <i class="fa-solid fa-graduation-cap me-1"></i> Manage Scholarships (<span id="admin-sch-count">12</span>)
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#admin-students" onclick="switchAdminTab('students')">
+              <i class="fa-solid fa-users me-1"></i> Registered Students (<span id="admin-students-count">3</span>)
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#admin-system" onclick="switchAdminTab('system')">
+              <i class="fa-solid fa-server me-1"></i> System Metrics
+            </a>
+          </li>
+        </ul>
+
+        <!-- Admin Tab 1: Scholarships Management -->
+        <div id="admin-tab-scholarships" class="card-custom p-4">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>Scholarship Title & Provider</th>
+                  <th>Type</th>
+                  <th>Amount</th>
+                  <th>Min %</th>
+                  <th>Income Ceiling</th>
+                  <th>Deadline</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="admin-scholarships-table-body">
+                <!-- Injected by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Admin Tab 2: Students Roster -->
+        <div id="admin-tab-students" class="card-custom p-4 d-none">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>Student Name & Email</th>
+                  <th>Course & College</th>
+                  <th>Academic Marks</th>
+                  <th>Annual Income</th>
+                  <th>Category</th>
+                  <th>Registered On</th>
+                </tr>
+              </thead>
+              <tbody id="admin-students-table-body">
+                <!-- Injected by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Admin Tab 3: System Overview -->
+        <div id="admin-tab-system" class="card-custom p-4 d-none">
+          <h5 class="fw-bold mb-3">Platform Health & Hackathon Diagnostics</h5>
+          <div class="row g-3">
+            <div class="col-md-4">
+              <div class="p-3 rounded bg-light border">
+                <div class="text-muted" style="font-size: 0.8rem;">Database Store</div>
+                <div class="fw-bold text-dark">JSON Local Persistence (Multi-File)</div>
+                <div class="text-success" style="font-size: 0.75rem;"><i class="fa-solid fa-check me-1"></i> Zero-latency CRUD Operations</div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="p-3 rounded bg-light border">
+                <div class="text-muted" style="font-size: 0.8rem;">Backend Runtime</div>
+                <div class="fw-bold text-dark">Node.js Native HTTP / REST Engine</div>
+                <div class="text-primary" style="font-size: 0.75rem;"><i class="fa-solid fa-bolt me-1"></i> Zero External Node Modules Required</div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="p-3 rounded bg-light border">
+                <div class="text-muted" style="font-size: 0.8rem;">Flask/MySQL Alternative</div>
+                <div class="fw-bold text-dark">Full Python Flask Backend Ready</div>
+                <div class="text-muted" style="font-size: 0.75rem;">Provided in /flask_backend directory</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL: HACKATHON PITCH DECK (10 SLIDES) -->
+  <!-- ============================================================== -->
+  <div class="modal fade" id="presentationModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: var(--radius-xl); overflow: hidden;">
+        <div class="modal-header bg-dark text-white border-0 py-3 px-4">
+          <div class="d-flex align-items-center gap-3">
+            <span class="badge bg-warning text-dark fw-bold px-3 py-1 rounded-pill">Hackathon Presentation Deck</span>
+            <h5 class="modal-title fw-bold mb-0">GrantGlide – ScholarQuest</h5>
+          </div>
+          <div class="d-flex align-items-center gap-3">
+            <span class="text-white-50" style="font-size: 0.85rem;" id="slide-counter-header">Slide 1 / 10</span>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+        </div>
+
+        <div class="modal-body p-0">
+          <div class="presentation-slide" id="current-slide-content">
+            <!-- Slide rendered by JS -->
+          </div>
+        </div>
+
+        <div class="modal-footer bg-light border-0 py-3 px-4 d-flex justify-content-between align-items-center">
+          <button class="btn btn-outline-secondary rounded-pill px-4" id="prev-slide-btn" onclick="prevSlide()">
+            <i class="fa-solid fa-arrow-left me-2"></i> Previous
+          </button>
+          
+          <!-- Slide dots selector -->
+          <div class="d-flex gap-2" id="slide-dots-container">
+            <!-- Injected by JS -->
+          </div>
+
+          <button class="btn btn-primary rounded-pill px-4" id="next-slide-btn" onclick="nextSlide()">
+            Next <i class="fa-solid fa-arrow-right ms-2"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL: HACKATHON FRAMEWORK STRUCTURE & ARCHITECTURE -->
+  <!-- ============================================================== -->
+  <div class="modal fade" id="frameworkModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: var(--radius-xl); overflow: hidden;">
+        
+        <!-- Modal Header -->
+        <div class="modal-header border-0 py-3 px-4 text-white" style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%);">
+          <div class="d-flex align-items-center gap-3">
+            <div class="rounded-circle bg-white text-primary d-flex align-items-center justify-content-center shadow-sm" style="width: 44px; height: 44px; font-size: 1.25rem;">
+              <i class="fa-solid fa-sitemap"></i>
+            </div>
+            <div>
+              <div class="d-flex align-items-center gap-2">
+                <h5 class="modal-title fw-bold mb-0">GrantGlide – ScholarQuest</h5>
+                <span class="badge bg-warning text-dark fw-bold px-2 py-0.5" style="font-size: 0.72rem;">Hackathon Blueprint</span>
+              </div>
+              <div class="text-white-50" style="font-size: 0.82rem;">Complete Framework Structure, System Architecture & Database Specification</div>
+            </div>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <!-- Tabbed Navigation Header -->
+        <div class="px-4 pt-3 bg-light border-bottom">
+          <ul class="nav nav-pills gap-2 flex-wrap" id="framework-pills-tab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active rounded-pill px-3 py-1 fw-bold" id="tab-tech-arch-btn" data-bs-toggle="pill" data-bs-target="#tab-tech-arch" type="button" role="tab" style="font-size: 0.85rem;">
+                <i class="fa-solid fa-layer-group me-1"></i> 1. Tech & Architecture
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link rounded-pill px-3 py-1 fw-bold" id="tab-modules-btn" data-bs-toggle="pill" data-bs-target="#tab-modules" type="button" role="tab" style="font-size: 0.85rem;">
+                <i class="fa-solid fa-cubes me-1"></i> 2. The 8 Modules
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link rounded-pill px-3 py-1 fw-bold" id="tab-database-btn" data-bs-toggle="pill" data-bs-target="#tab-database" type="button" role="tab" style="font-size: 0.85rem;">
+                <i class="fa-solid fa-database me-1"></i> 3. Database Framework
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link rounded-pill px-3 py-1 fw-bold" id="tab-working-flow-btn" data-bs-toggle="pill" data-bs-target="#tab-working-flow" type="button" role="tab" style="font-size: 0.85rem;">
+                <i class="fa-solid fa-arrow-progress me-1"></i> 4. Working Framework
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link rounded-pill px-3 py-1 fw-bold" id="tab-dev-outputs-btn" data-bs-toggle="pill" data-bs-target="#tab-dev-outputs" type="button" role="tab" style="font-size: 0.85rem;">
+                <i class="fa-solid fa-circle-check me-1"></i> 5. Phases & Final Outputs
+              </button>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Modal Body Content -->
+        <div class="modal-body p-4" style="background-color: var(--bg-page);">
+          <div class="tab-content" id="framework-pills-tabContent">
+
+            <!-- TAB 1: TECHNOLOGY & SYSTEM ARCHITECTURE -->
+            <div class="tab-pane fade show active" id="tab-tech-arch" role="tabpanel">
+              <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <h5 class="fw-bold text-dark mb-0"><i class="fa-solid fa-microchip text-primary me-2"></i>1. Technology Framework</h5>
+                  <span class="badge bg-primary-subtle text-primary">Web-Based Platform</span>
+                </div>
+                <div class="table-responsive">
+                  <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                      <tr style="font-size: 0.82rem; text-transform: uppercase;">
+                        <th style="width: 25%;">Layer</th>
+                        <th style="width: 35%;">Technology</th>
+                        <th style="width: 40%;">Purpose</th>
+                      </tr>
+                    </thead>
+                    <tbody style="font-size: 0.88rem;">
+                      <tr>
+                        <td><span class="badge bg-light text-dark border">Frontend</span></td>
+                        <td><strong class="text-primary">HTML5</strong></td>
+                        <td class="text-muted">Webpage structure & semantic content hierarchy</td>
+                      </tr>
+                      <tr>
+                        <td><span class="badge bg-light text-dark border">Styling</span></td>
+                        <td><strong class="text-purple">CSS3, Bootstrap 5.3</strong></td>
+                        <td class="text-muted">Attractive, modern glassmorphism and fully responsive layout</td>
+                      </tr>
+                      <tr>
+                        <td><span class="badge bg-light text-dark border">Interactivity</span></td>
+                        <td><strong class="text-warning">JavaScript (ES6+)</strong></td>
+                        <td class="text-muted">Dynamic client functionality, async REST client, state handling</td>
+                      </tr>
+                      <tr>
+                        <td><span class="badge bg-light text-dark border">Backend</span></td>
+                        <td><strong class="text-success">Python Flask</strong></td>
+                        <td class="text-muted">Handles application business logic, REST APIs, and auth sessions</td>
+                      </tr>
+                      <tr>
+                        <td><span class="badge bg-light text-dark border">Database</span></td>
+                        <td><strong class="text-info">MySQL (5.7+ / 8.0+)</strong></td>
+                        <td class="text-muted">Stores student profiles, scholarship records, and applications</td>
+                      </tr>
+                      <tr>
+                        <td><span class="badge bg-light text-dark border">Development Tool</span></td>
+                        <td><strong class="text-dark">VS Code</strong></td>
+                        <td class="text-muted">Integrated development environment for writing & debugging</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- System Architecture Block -->
+              <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+                <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-diagram-project text-indigo me-2"></i>2. System Architecture & Component Interaction</h5>
+                
+                <div class="row g-3 text-center">
+                  <div class="col-md-4">
+                    <div class="p-3 rounded-4 bg-primary-subtle border border-primary h-100 text-start">
+                      <div class="fw-bold text-primary mb-1"><i class="fa-solid fa-display me-1"></i> USER INTERFACE</div>
+                      <div class="text-dark fw-semibold" style="font-size: 0.85rem;">HTML • CSS • Bootstrap • JavaScript</div>
+                      <ul class="text-muted small ps-3 mt-2 mb-0">
+                        <li>Student Dashboard & Navigation</li>
+                        <li>Search Catalog & Multi-Filters</li>
+                        <li>Interactive Eligibility Evaluator</li>
+                        <li>Application Kanban & Document Checklist</li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="p-3 rounded-4 bg-success-subtle border border-success h-100 text-start">
+                      <div class="fw-bold text-success mb-1"><i class="fa-solid fa-server me-1"></i> APPLICATION BACKEND</div>
+                      <div class="text-dark fw-semibold" style="font-size: 0.85rem;">Python • Flask RESTful API</div>
+                      <ul class="text-muted small ps-3 mt-2 mb-0">
+                        <li><strong>Business Logic:</strong> 5-Factor eligibility engine, countdown tracker</li>
+                        <li><strong>Authentication:</strong> Student & Admin credentials</li>
+                        <li><strong>CORS:</strong> Asynchronous JSON API endpoints</li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="p-3 rounded-4 bg-info-subtle border border-info h-100 text-start">
+                      <div class="fw-bold text-info mb-1"><i class="fa-solid fa-database me-1"></i> DATABASE LAYER</div>
+                      <div class="text-dark fw-semibold" style="font-size: 0.85rem;">MySQL (grantglide_db)</div>
+                      <ul class="text-muted small ps-3 mt-2 mb-0">
+                        <li><strong>students:</strong> Academic & eligibility profiles</li>
+                        <li><strong>scholarships:</strong> Opportunities & amounts</li>
+                        <li><strong>eligibility:</strong> Income, marks, category rules</li>
+                        <li><strong>applications:</strong> End-to-end tracking</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- TAB 2: THE 8 FUNCTIONAL MODULES -->
+            <div class="tab-pane fade" id="tab-modules" role="tabpanel">
+              <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-3">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <h5 class="fw-bold text-dark mb-0"><i class="fa-solid fa-cubes text-primary me-2"></i>3. Functional Framework (The 8 Modules)</h5>
+                  <span class="badge bg-success-subtle text-success">100% Implemented</span>
+                </div>
+                <p class="text-muted small mb-4">Every required module has been engineered into this prototype with live user workflows:</p>
+
+                <div class="row g-3">
+                  <!-- Module 1 -->
+                  <div class="col-md-6 col-lg-3">
+                    <div class="p-3 rounded-4 bg-light border h-100 d-flex flex-column">
+                      <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="badge bg-primary rounded-pill">Module 1</span>
+                        <i class="fa-solid fa-user-lock text-primary"></i>
+                      </div>
+                      <h6 class="fw-bold mb-1">User Authentication</h6>
+                      <p class="text-muted small mb-3 flex-grow-1">Student registration, password login, session persistence, and administrator verification.</p>
+                      <button class="btn btn-outline-primary btn-sm rounded-pill w-100" onclick="bootstrap.Modal.getInstance(document.getElementById('frameworkModal')).hide(); navigateTo('auth');">Test Module</button>
+                    </div>
+                  </div>
+
+                  <!-- Module 2 -->
+                  <div class="col-md-6 col-lg-3">
+                    <div class="p-3 rounded-4 bg-light border h-100 d-flex flex-column">
+                      <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="badge bg-primary rounded-pill">Module 2</span>
+                        <i class="fa-solid fa-id-card text-primary"></i>
+                      </div>
+                      <h6 class="fw-bold mb-1">Student Profile</h6>
+                      <p class="text-muted small mb-3 flex-grow-1">Academic marks, board %, family annual income, social quota, gender, disability, and course details.</p>
+                      <button class="btn btn-outline-primary btn-sm rounded-pill w-100" onclick="bootstrap.Modal.getInstance(document.getElementById('frameworkModal')).hide(); openProfileEditModal();">Test Module</button>
+                    </div>
+                  </div>
+
+                  <!-- Module 3 -->
+                  <div class="col-md-6 col-lg-3">
+                    <div class="p-3 rounded-4 bg-light border h-100 d-flex flex-column">
+                      <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="badge bg-primary rounded-pill">Module 3</span>
+                        <i class="fa-solid fa-magnifying-glass text-primary"></i>
+                      </div>
+                      <h6 class="fw-bold mb-1">Scholarship Management</h6>
+                      <p class="text-muted small mb-3 flex-grow-1">Comprehensive faceted discovery catalog, keyword search, provider details, and funding amount.</p>
+                      <button class="btn btn-outline-primary btn-sm rounded-pill w-100" onclick="bootstrap.Modal.getInstance(document.getElementById('frameworkModal')).hide(); navigateTo('discovery');">Test Module</button>
+                    </div>
+                  </div>
+
+                  <!-- Module 4 -->
+                  <div class="col-md-6 col-lg-3">
+                    <div class="p-3 rounded-4 bg-light border h-100 d-flex flex-column">
+                      <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="badge bg-primary rounded-pill">Module 4</span>
+                        <i class="fa-solid fa-bullseye text-primary"></i>
+                      </div>
+                      <h6 class="fw-bold mb-1">Eligibility Matching</h6>
+                      <p class="text-muted small mb-3 flex-grow-1">Rule engine comparing student parameters with criteria to compute exact match % and transparent diagnostics.</p>
+                      <button class="btn btn-outline-primary btn-sm rounded-pill w-100" onclick="bootstrap.Modal.getInstance(document.getElementById('frameworkModal')).hide(); navigateTo('eligibility');">Test Module</button>
+                    </div>
+                  </div>
+
+                  <!-- Module 5 -->
+                  <div class="col-md-6 col-lg-3">
+                    <div class="p-3 rounded-4 bg-light border h-100 d-flex flex-column">
+                      <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="badge bg-primary rounded-pill">Module 5</span>
+                        <i class="fa-solid fa-book-open-reader text-primary"></i>
+                      </div>
+                      <h6 class="fw-bold mb-1">Application Guidance</h6>
+                      <p class="text-muted small mb-3 flex-grow-1">Step-by-step portal instructions, direct links to verified portals (NSP, AICTE, Vidyasaarathi), and DigiLocker tips.</p>
+                      <button class="btn btn-outline-primary btn-sm rounded-pill w-100" onclick="bootstrap.Modal.getInstance(document.getElementById('frameworkModal')).hide(); navigateTo('guidance');">Test Module</button>
+                    </div>
+                  </div>
+
+                  <!-- Module 6 -->
+                  <div class="col-md-6 col-lg-3">
+                    <div class="p-3 rounded-4 bg-light border h-100 d-flex flex-column">
+                      <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="badge bg-primary rounded-pill">Module 6</span>
+                        <i class="fa-solid fa-folder-check text-primary"></i>
+                      </div>
+                      <h6 class="fw-bold mb-1">Document Management</h6>
+                      <p class="text-muted small mb-3 flex-grow-1">Unified document checklists, issuing authorities (Tehsildar/SDM), upload references, and readiness scores.</p>
+                      <button class="btn btn-outline-primary btn-sm rounded-pill w-100" onclick="bootstrap.Modal.getInstance(document.getElementById('frameworkModal')).hide(); navigateTo('documents');">Test Module</button>
+                    </div>
+                  </div>
+
+                  <!-- Module 7 -->
+                  <div class="col-md-6 col-lg-3">
+                    <div class="p-3 rounded-4 bg-light border h-100 d-flex flex-column">
+                      <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="badge bg-primary rounded-pill">Module 7</span>
+                        <i class="fa-solid fa-bell text-primary"></i>
+                      </div>
+                      <h6 class="fw-bold mb-1">Notification System</h6>
+                      <p class="text-muted small mb-3 flex-grow-1">Upcoming deadline countdown radar, interactive month calendar, and proactive toast reminders.</p>
+                      <button class="btn btn-outline-primary btn-sm rounded-pill w-100" onclick="bootstrap.Modal.getInstance(document.getElementById('frameworkModal')).hide(); navigateTo('deadlines');">Test Module</button>
+                    </div>
+                  </div>
+
+                  <!-- Module 8 -->
+                  <div class="col-md-6 col-lg-3">
+                    <div class="p-3 rounded-4 bg-light border h-100 d-flex flex-column">
+                      <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="badge bg-primary rounded-pill">Module 8</span>
+                        <i class="fa-solid fa-shield-halved text-primary"></i>
+                      </div>
+                      <h6 class="fw-bold mb-1">Admin Dashboard</h6>
+                      <p class="text-muted small mb-3 flex-grow-1">Institutional management panel for scholarship CRUD, student roster viewing, and platform health telemetry.</p>
+                      <button class="btn btn-outline-primary btn-sm rounded-pill w-100" onclick="bootstrap.Modal.getInstance(document.getElementById('frameworkModal')).hide(); switchToAdmin();">Test Module</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- TAB 3: DATABASE FRAMEWORK (MySQL) -->
+            <div class="tab-pane fade" id="tab-database" role="tabpanel">
+              <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <h5 class="fw-bold text-dark mb-0"><i class="fa-solid fa-database text-primary me-2"></i>4. Database Framework (MySQL Tables)</h5>
+                  <span class="badge bg-info-subtle text-info">grantglide_db</span>
+                </div>
+                <p class="text-muted small mb-4">Relational database schema with primary keys, indexes, and foreign key relationships:</p>
+
+                <div class="table-responsive mb-4">
+                  <table class="table table-bordered align-middle">
+                    <thead class="table-light" style="font-size: 0.8rem;">
+                      <tr>
+                        <th>Table Name</th>
+                        <th>Stored Information (Schema Fields)</th>
+                        <th>Primary Key / Foreign Keys</th>
+                      </tr>
+                    </thead>
+                    <tbody style="font-size: 0.84rem;">
+                      <tr>
+                        <td><strong class="text-primary">Students</strong></td>
+                        <td><code>id</code>, <code>name</code>, <code>email</code>, <code>password_hash</code>, <code>phone</code>, <code>course</code>, <code>education_level</code>, <code>percentage</code>, <code>cgpa</code>, <code>family_income</code>, <code>category</code>, <code>gender</code>, <code>state</code>, <code>college</code>, <code>year_of_study</code></td>
+                        <td><code>id</code> (PK, VARCHAR)</td>
+                      </tr>
+                      <tr>
+                        <td><strong class="text-primary">Scholarships</strong></td>
+                        <td><code>id</code>, <code>name</code>, <code>provider</code>, <code>type</code>, <code>subtype</code>, <code>amount</code>, <code>amount_val</code>, <code>deadline</code>, <code>status</code>, <code>description</code>, <code>official_url</code>, <code>portal_name</code></td>
+                        <td><code>id</code> (PK, VARCHAR)</td>
+                      </tr>
+                      <tr>
+                        <td><strong class="text-primary">Eligibility</strong></td>
+                        <td><code>id</code>, <code>scholarship_id</code>, <code>income_limit</code>, <code>marks</code>, <code>category</code>, <code>course</code>, <code>gender</code>, <code>education_level</code></td>
+                        <td><code>id</code> (PK), FK: <code>scholarship_id -> scholarships(id)</code></td>
+                      </tr>
+                      <tr>
+                        <td><strong class="text-primary">Applications</strong></td>
+                        <td><code>id</code>, <code>student_id</code>, <code>scholarship_id</code>, <code>status</code>, <code>application_no</code>, <code>submission_date</code>, <code>notes</code></td>
+                        <td><code>id</code> (PK), FK: <code>student_id</code>, <code>scholarship_id</code></td>
+                      </tr>
+                      <tr>
+                        <td><strong class="text-primary">Documents</strong></td>
+                        <td><code>id</code>, <code>document_name</code>, <code>requirement</code>, <code>upload_reference</code>, <code>category</code>, <code>issuing_authority</code>, <code>validity</code>, <code>how_to_obtain</code>, <code>common_rejection_reasons</code></td>
+                        <td><code>id</code> (PK, VARCHAR)</td>
+                      </tr>
+                      <tr>
+                        <td><strong class="text-primary">Notifications</strong></td>
+                        <td><code>id</code>, <code>student_id</code>, <code>title</code>, <code>message</code>, <code>type</code>, <code>date</code>, <code>read_status</code></td>
+                        <td><code>id</code> (PK, VARCHAR)</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <div class="p-3 rounded-4 bg-light border">
+                  <div class="fw-bold text-dark small mb-1"><i class="fa-solid fa-terminal me-1 text-primary"></i> Database Setup Scripts Available:</div>
+                  <div class="text-muted small">
+                    • <strong>SQL Script:</strong> <code>flask_backend/database.sql</code> (Complete DDL + Seed Data for all 6 tables)<br>
+                    • <strong>Python Initializer:</strong> <code>python flask_backend/setup_mysql.py</code> (1-Click automated database & table creation)
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- TAB 4: WORKING FRAMEWORK (7 STEPS) -->
+            <div class="tab-pane fade" id="tab-working-flow" role="tabpanel">
+              <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+                <h5 class="fw-bold text-dark mb-4"><i class="fa-solid fa-route text-primary me-2"></i>5. Working Framework (7-Step End-to-End Workflow)</h5>
+                
+                <div class="row g-3">
+                  <div class="col-md-6 col-lg-4">
+                    <div class="p-3 rounded-4 bg-light border h-100">
+                      <div class="d-flex align-items-center gap-2 mb-2">
+                        <span class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold" style="width: 28px; height: 28px; font-size: 0.8rem;">1</span>
+                        <h6 class="fw-bold mb-0">Student Registration</h6>
+                      </div>
+                      <p class="text-muted small mb-0">Student registers account with personal, institutional, and contact information.</p>
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-lg-4">
+                    <div class="p-3 rounded-4 bg-light border h-100">
+                      <div class="d-flex align-items-center gap-2 mb-2">
+                        <span class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold" style="width: 28px; height: 28px; font-size: 0.8rem;">2</span>
+                        <h6 class="fw-bold mb-0">Profile Information</h6>
+                      </div>
+                      <p class="text-muted small mb-0">Inputs qualifying board/degree percentage, annual household income, category, and gender.</p>
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-lg-4">
+                    <div class="p-3 rounded-4 bg-light border h-100">
+                      <div class="d-flex align-items-center gap-2 mb-2">
+                        <span class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold" style="width: 28px; height: 28px; font-size: 0.8rem;">3</span>
+                        <h6 class="fw-bold mb-0">Scholarship Search</h6>
+                      </div>
+                      <p class="text-muted small mb-0">Explores verified schemes through faceted filters: Central/State, Private, Education Level, Category.</p>
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-lg-4">
+                    <div class="p-3 rounded-4 bg-light border h-100">
+                      <div class="d-flex align-items-center gap-2 mb-2">
+                        <span class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold" style="width: 28px; height: 28px; font-size: 0.8rem;">4</span>
+                        <h6 class="fw-bold mb-0">Eligibility Verification</h6>
+                      </div>
+                      <p class="text-muted small mb-0">Engine tests student profile against multi-factor scholarship rules with transparent diagnostics.</p>
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-lg-4">
+                    <div class="p-3 rounded-4 bg-light border h-100">
+                      <div class="d-flex align-items-center gap-2 mb-2">
+                        <span class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold" style="width: 28px; height: 28px; font-size: 0.8rem;">5</span>
+                        <h6 class="fw-bold mb-0">Suitable Scholarships Displayed</h6>
+                      </div>
+                      <p class="text-muted small mb-0">Matches ranked by eligibility percentage (100% Eligible vs Partially Eligible), award amount, and urgency.</p>
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-lg-4">
+                    <div class="p-3 rounded-4 bg-light border h-100">
+                      <div class="d-flex align-items-center gap-2 mb-2">
+                        <span class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold" style="width: 28px; height: 28px; font-size: 0.8rem;">6</span>
+                        <h6 class="fw-bold mb-0">Application Guidance</h6>
+                      </div>
+                      <p class="text-muted small mb-0">Step-by-step guidance, anti-rejection document checklists, and direct official portal launch.</p>
+                    </div>
+                  </div>
+                  <div class="col-md-12">
+                    <div class="p-3 rounded-4 bg-primary-subtle border border-primary">
+                      <div class="d-flex align-items-center gap-2 mb-2">
+                        <span class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold" style="width: 28px; height: 28px; font-size: 0.8rem;">7</span>
+                        <h6 class="fw-bold mb-0 text-primary">Application Status Tracking</h6>
+                      </div>
+                      <p class="text-muted small mb-0">Tracks lifecycle in Kanban pipeline: Saved → In Progress → Submitted → Under Review → Awarded with DBT bank disbursement.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- TAB 5: PHASES & FINAL OUTPUTS -->
+            <div class="tab-pane fade" id="tab-dev-outputs" role="tabpanel">
+              <div class="row g-4">
+                <!-- Development Phases -->
+                <div class="col-lg-6">
+                  <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100">
+                    <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-list-ol text-primary me-2"></i>6. Development Phases</h5>
+                    <div class="table-responsive">
+                      <table class="table table-sm table-hover align-middle mb-0" style="font-size: 0.84rem;">
+                        <thead class="table-light">
+                          <tr>
+                            <th>Phase</th>
+                            <th>Development Work</th>
+                            <th>Status</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr><td><strong>Phase 1</strong></td><td>Requirement analysis</td><td><span class="badge bg-success-subtle text-success">Completed</span></td></tr>
+                          <tr><td><strong>Phase 2</strong></td><td>UI/UX design</td><td><span class="badge bg-success-subtle text-success">Completed</span></td></tr>
+                          <tr><td><strong>Phase 3</strong></td><td>Frontend development</td><td><span class="badge bg-success-subtle text-success">Completed</span></td></tr>
+                          <tr><td><strong>Phase 4</strong></td><td>Backend development</td><td><span class="badge bg-success-subtle text-success">Completed</span></td></tr>
+                          <tr><td><strong>Phase 5</strong></td><td>Database integration</td><td><span class="badge bg-success-subtle text-success">Completed</span></td></tr>
+                          <tr><td><strong>Phase 6</strong></td><td>Eligibility matching implementation</td><td><span class="badge bg-success-subtle text-success">Completed</span></td></tr>
+                          <tr><td><strong>Phase 7</strong></td><td>Testing and debugging</td><td><span class="badge bg-success-subtle text-success">Completed</span></td></tr>
+                          <tr><td><strong>Phase 8</strong></td><td>Final deployment and presentation</td><td><span class="badge bg-success-subtle text-success">Ready</span></td></tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Expected Final Outputs Checklist -->
+                <div class="col-lg-6">
+                  <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100">
+                    <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-circle-check text-success me-2"></i>7. Expected Final Outputs</h5>
+                    <ul class="list-group list-group-flush" style="font-size: 0.85rem;">
+                      <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                        <span><i class="fa-solid fa-check text-success me-2"></i> Student registration and login page</span>
+                        <span class="badge bg-success">Verified</span>
+                      </li>
+                      <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                        <span><i class="fa-solid fa-check text-success me-2"></i> Student dashboard</span>
+                        <span class="badge bg-success">Verified</span>
+                      </li>
+                      <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                        <span><i class="fa-solid fa-check text-success me-2"></i> Scholarship search page</span>
+                        <span class="badge bg-success">Verified</span>
+                      </li>
+                      <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                        <span><i class="fa-solid fa-check text-success me-2"></i> Eligibility checker</span>
+                        <span class="badge bg-success">Verified</span>
+                      </li>
+                      <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                        <span><i class="fa-solid fa-check text-success me-2"></i> Scholarship details page</span>
+                        <span class="badge bg-success">Verified</span>
+                      </li>
+                      <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                        <span><i class="fa-solid fa-check text-success me-2"></i> Application guidance page</span>
+                        <span class="badge bg-success">Verified</span>
+                      </li>
+                      <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                        <span><i class="fa-solid fa-check text-success me-2"></i> Deadline tracker</span>
+                        <span class="badge bg-success">Verified</span>
+                      </li>
+                      <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                        <span><i class="fa-solid fa-check text-success me-2"></i> Admin dashboard</span>
+                        <span class="badge bg-success">Verified</span>
+                      </li>
+                    </ul>
+
+                    <div class="mt-3 pt-3 border-top">
+                      <div class="fw-bold text-dark small mb-2"><i class="fa-solid fa-compass-drafting me-1 text-primary"></i> 8. Future Scope & Roadmap:</div>
+                      <div class="d-flex flex-wrap gap-1" style="font-size: 0.76rem;">
+                        <span class="badge bg-light text-dark border">AI-Based Recommendations</span>
+                        <span class="badge bg-light text-dark border">Multilingual Support</span>
+                        <span class="badge bg-light text-dark border">Scholarship Chatbot</span>
+                        <span class="badge bg-light text-dark border">Mobile Application</span>
+                        <span class="badge bg-light text-dark border">Govt Portal API Integration</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="modal-footer bg-light border-0 py-3 px-4 d-flex justify-content-between">
+          <div class="text-muted small">
+            <strong>Framework Status:</strong> Production Prototype Ready • Recommended Stack: HTML + CSS + JS + Python Flask + MySQL
+          </div>
+          <button type="button" class="btn btn-primary rounded-pill px-4 fw-semibold" data-bs-dismiss="modal">
+            Close Blueprint
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL: SCHOLARSHIP DETAILS & APPLICATION MODAL -->
+  <!-- ============================================================== -->
+  <div class="modal fade" id="scholarshipDetailsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: var(--radius-lg);">
+        <div class="modal-header border-bottom py-3 px-4">
+          <div>
+            <span class="badge bg-primary-subtle text-primary mb-1" id="modal-sch-type">Government Central</span>
+            <h5 class="modal-title fw-bold" id="modal-sch-title">Scholarship Name</h5>
+            <div class="text-muted" style="font-size: 0.82rem;" id="modal-sch-provider">Provider Body</div>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body p-4">
+          <div class="row g-3 mb-4">
+            <div class="col-sm-4">
+              <div class="p-3 rounded bg-light border text-center">
+                <div class="text-muted" style="font-size: 0.75rem;">Scholarship Amount</div>
+                <div class="fw-bold text-primary h5 mb-0" id="modal-sch-amount">₹50,000 / yr</div>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="p-3 rounded bg-light border text-center">
+                <div class="text-muted" style="font-size: 0.75rem;">Application Deadline</div>
+                <div class="fw-bold text-danger h5 mb-0" id="modal-sch-deadline">30 Nov 2026</div>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="p-3 rounded bg-light border text-center">
+                <div class="text-muted" style="font-size: 0.75rem;">Min Academic %</div>
+                <div class="fw-bold text-dark h5 mb-0" id="modal-sch-marks">60% Marks</div>
+              </div>
+            </div>
+          </div>
+
+          <h6 class="fw-bold text-dark mb-2">Description & Benefits</h6>
+          <p class="text-muted mb-4" id="modal-sch-desc" style="font-size: 0.9rem; line-height: 1.6;">Description</p>
+
+          <h6 class="fw-bold text-dark mb-2">Eligibility Criteria</h6>
+          <ul class="text-muted mb-4" id="modal-sch-criteria" style="font-size: 0.88rem; line-height: 1.8;">
+            <!-- Injected by JS -->
+          </ul>
+
+          <h6 class="fw-bold text-dark mb-2">Mandatory Documents Checklist</h6>
+          <div class="d-flex flex-wrap gap-2 mb-4" id="modal-sch-docs">
+            <!-- Injected by JS -->
+          </div>
+
+          <h6 class="fw-bold text-dark mb-2">Application Procedure</h6>
+          <ol class="text-muted ps-3 mb-0" id="modal-sch-steps" style="font-size: 0.88rem; line-height: 1.7;">
+            <!-- Injected by JS -->
+          </ol>
+        </div>
+
+        <div class="modal-footer border-top py-3 px-4 d-flex justify-content-between">
+          <button type="button" class="btn btn-outline-secondary rounded-pill" data-bs-dismiss="modal">Close</button>
+          <div class="d-flex gap-2">
+            <button type="button" class="btn btn-outline-primary rounded-pill" id="modal-sch-track-btn" onclick="addCurrentModalToTracker()">
+              <i class="fa-solid fa-plus me-1"></i> Add to Tracker
+            </button>
+            <a href="#" target="_blank" class="btn btn-primary rounded-pill px-4" id="modal-sch-portal-btn">
+              Apply on Official Portal <i class="fa-solid fa-arrow-up-right-from-square ms-1"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL: ADD / EDIT SCHOLARSHIP (ADMIN) -->
+  <!-- ============================================================== -->
+  <div class="modal fade" id="addScholarshipModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: var(--radius-lg);">
+        <div class="modal-header border-bottom py-3 px-4">
+          <h5 class="modal-title fw-bold" id="adminModalTitle">Add New Scholarship Listing</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <form id="admin-scholarship-form" onsubmit="handleAdminSaveScholarship(event)">
+          <div class="modal-body p-4">
+            <input type="hidden" id="admin-sch-id">
+            <div class="row g-3">
+              <div class="col-md-8">
+                <label class="form-label fw-semibold" style="font-size: 0.8rem;">Scholarship Name *</label>
+                <input type="text" id="admin-form-name" class="form-control form-control-sm" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold" style="font-size: 0.8rem;">Provider Organization *</label>
+                <input type="text" id="admin-form-provider" class="form-control form-control-sm" required>
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label fw-semibold" style="font-size: 0.8rem;">Type</label>
+                <select id="admin-form-type" class="form-select form-select-sm">
+                  <option value="Government">Government</option>
+                  <option value="Private">Private / CSR</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold" style="font-size: 0.8rem;">Award Amount (Text) *</label>
+                <input type="text" id="admin-form-amount" class="form-control form-control-sm" placeholder="e.g. ₹50,000 / year" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold" style="font-size: 0.8rem;">Numerical Amount (₹) *</label>
+                <input type="number" id="admin-form-amount-val" class="form-control form-control-sm" placeholder="50000" required>
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label fw-semibold" style="font-size: 0.8rem;">Min Percentage Required (%)</label>
+                <input type="number" step="0.1" id="admin-form-min-marks" class="form-control form-control-sm" value="60" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold" style="font-size: 0.8rem;">Max Family Income Ceiling (₹)</label>
+                <input type="number" id="admin-form-max-income" class="form-control form-control-sm" value="450000" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold" style="font-size: 0.8rem;">Application Deadline *</label>
+                <input type="date" id="admin-form-deadline" class="form-control form-control-sm" required>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-semibold" style="font-size: 0.8rem;">Eligible Education Levels (comma separated)</label>
+                <input type="text" id="admin-form-level" class="form-control form-control-sm" value="Undergraduate, Postgraduate">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold" style="font-size: 0.8rem;">Eligible Categories (comma separated)</label>
+                <input type="text" id="admin-form-categories" class="form-control form-control-sm" value="General, OBC, SC, ST, EWS">
+              </div>
+
+              <div class="col-12">
+                <label class="form-label fw-semibold" style="font-size: 0.8rem;">Official Portal URL</label>
+                <input type="url" id="admin-form-url" class="form-control form-control-sm" value="https://scholarships.gov.in/">
+              </div>
+
+              <div class="col-12">
+                <label class="form-label fw-semibold" style="font-size: 0.8rem;">Scholarship Description</label>
+                <textarea id="admin-form-desc" class="form-control form-control-sm" rows="3"></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer border-top py-3 px-4">
+            <button type="button" class="btn btn-outline-secondary rounded-pill" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary rounded-pill px-4">Save Scholarship</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL: STUDENT REGISTRATION & LOGIN (MODULE 1) -->
+  <!-- ============================================================== -->
+  <div class="modal fade" id="authModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: var(--radius-lg); overflow: hidden;">
+        <div class="modal-header border-0 pb-0 pt-4 px-4">
+          <ul class="nav nav-pills nav-fill w-100 p-1 bg-light rounded-pill" id="authTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active rounded-pill fw-semibold py-2" id="tab-signin-btn" data-bs-toggle="pill" data-bs-target="#auth-signin-tab" type="button" role="tab">
+                <i class="fa-solid fa-right-to-bracket me-1"></i> Sign In
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link rounded-pill fw-semibold py-2" id="tab-register-btn" data-bs-toggle="pill" data-bs-target="#auth-register-tab" type="button" role="tab">
+                <i class="fa-solid fa-user-plus me-1"></i> Student Register
+              </button>
+            </li>
+          </ul>
+        </div>
+
+        <div class="modal-body p-4">
+          <div class="tab-content" id="authTabsContent">
+            <!-- Tab 1: Sign In -->
+            <div class="tab-pane fade show active" id="auth-signin-tab" role="tabpanel">
+              <div class="text-center mb-3">
+                <h5 class="fw-bold mb-1">Welcome to GrantGlide</h5>
+                <p class="text-muted" style="font-size: 0.85rem;">Access your personalized scholarships and applications</p>
+              </div>
+
+              <!-- Quick 1-Click Demo Login Bar -->
+              <div class="p-3 mb-3 rounded-4 bg-light border">
+                <div class="text-muted fw-bold mb-2 text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.05em;">
+                  ⚡ Quick Demo 1-Click Persona Logins:
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                  <button type="button" class="btn btn-sm btn-outline-primary rounded-pill flex-grow-1" onclick="quickLogin('std-101')" style="font-size: 0.78rem;">
+                    <i class="fa-solid fa-user me-1"></i> Aarav (UG 84.5%)
+                  </button>
+                  <button type="button" class="btn btn-sm btn-outline-purple rounded-pill flex-grow-1 text-purple" onclick="quickLogin('std-102')" style="font-size: 0.78rem; border-color: #c084fc;">
+                    <i class="fa-solid fa-user-graduate me-1"></i> Priya (OBC 88%)
+                  </button>
+                  <button type="button" class="btn btn-sm btn-outline-warning rounded-pill flex-grow-1 text-dark" onclick="quickLogin('std-103')" style="font-size: 0.78rem;">
+                    <i class="fa-solid fa-award me-1"></i> Rahul (SC 76%)
+                  </button>
+                  <button type="button" class="btn btn-sm btn-outline-danger rounded-pill flex-grow-1" onclick="quickLogin('admin')" style="font-size: 0.78rem;">
+                    <i class="fa-solid fa-shield-halved me-1"></i> Admin Panel
+                  </button>
+                </div>
+              </div>
+
+              <form id="signin-form" onsubmit="handleLoginSubmit(event)">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold" style="font-size: 0.8rem;">Email Address</label>
+                  <div class="input-group input-group-sm">
+                    <span class="input-group-text"><i class="fa-regular fa-envelope"></i></span>
+                    <input type="email" id="signin-email" class="form-control" placeholder="aarav.sharma@example.com" value="aarav.sharma@example.com" required>
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label fw-semibold" style="font-size: 0.8rem;">Password</label>
+                  <div class="input-group input-group-sm">
+                    <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
+                    <input type="password" id="signin-password" class="form-control" placeholder="••••••••" value="password123" required>
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label fw-semibold" style="font-size: 0.8rem;">Login Role</label>
+                  <select id="signin-role" class="form-select form-select-sm">
+                    <option value="student">Student Account</option>
+                    <option value="admin">Administrator / Evaluator</option>
+                  </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 rounded-pill fw-bold py-2 mt-2">
+                  <i class="fa-solid fa-right-to-bracket me-2"></i> Sign In to Account
+                </button>
+              </form>
+            </div>
+
+            <!-- Tab 2: Student Registration -->
+            <div class="tab-pane fade" id="auth-register-tab" role="tabpanel">
+              <div class="text-center mb-3">
+                <h5 class="fw-bold mb-1">Create Student Profile</h5>
+                <p class="text-muted" style="font-size: 0.82rem;">Enter your academic details to automatically discover eligible scholarships</p>
+              </div>
+
+              <form id="register-form" onsubmit="handleRegisterSubmit(event)">
+                <div class="row g-2 mb-2">
+                  <div class="col-sm-6">
+                    <label class="form-label fw-semibold" style="font-size: 0.78rem;">Full Name *</label>
+                    <input type="text" id="reg-name" class="form-control form-control-sm" placeholder="Ananya Patel" required>
+                  </div>
+                  <div class="col-sm-6">
+                    <label class="form-label fw-semibold" style="font-size: 0.78rem;">Email Address *</label>
+                    <input type="email" id="reg-email" class="form-control form-control-sm" placeholder="ananya.p@college.edu" required>
+                  </div>
+                </div>
+
+                <div class="row g-2 mb-2">
+                  <div class="col-sm-6">
+                    <label class="form-label fw-semibold" style="font-size: 0.78rem;">Password *</label>
+                    <input type="password" id="reg-password" class="form-control form-control-sm" value="password123" required>
+                  </div>
+                  <div class="col-sm-6">
+                    <label class="form-label fw-semibold" style="font-size: 0.78rem;">Mobile Phone *</label>
+                    <input type="tel" id="reg-phone" class="form-control form-control-sm" placeholder="+91 98765 00000" required>
+                  </div>
+                </div>
+
+                <div class="row g-2 mb-2">
+                  <div class="col-sm-6">
+                    <label class="form-label fw-semibold" style="font-size: 0.78rem;">Education Level *</label>
+                    <select id="reg-level" class="form-select form-select-sm" required>
+                      <option value="Undergraduate">Undergraduate (Degree / B.Tech / MBBS)</option>
+                      <option value="Postgraduate">Postgraduate (Masters / M.Tech / MBA)</option>
+                      <option value="Diploma">Diploma / Polytechnic</option>
+                      <option value="Intermediate">Intermediate (11th & 12th)</option>
+                      <option value="School (9-12)">School (Classes 9th - 12th)</option>
+                    </select>
+                  </div>
+                  <div class="col-sm-6">
+                    <label class="form-label fw-semibold" style="font-size: 0.78rem;">Course & Branch *</label>
+                    <input type="text" id="reg-course" class="form-control form-control-sm" placeholder="Computer Science Engineering" required>
+                  </div>
+                </div>
+
+                <div class="row g-2 mb-2">
+                  <div class="col-sm-6">
+                    <label class="form-label fw-semibold" style="font-size: 0.78rem;">Academic Marks (%) *</label>
+                    <input type="number" step="0.1" min="0" max="100" id="reg-marks" class="form-control form-control-sm" placeholder="85.5" required>
+                  </div>
+                  <div class="col-sm-6">
+                    <label class="form-label fw-semibold" style="font-size: 0.78rem;">CGPA Equivalent</label>
+                    <input type="text" id="reg-cgpa" class="form-control form-control-sm" placeholder="8.9">
+                  </div>
+                </div>
+
+                <div class="row g-2 mb-2">
+                  <div class="col-sm-6">
+                    <label class="form-label fw-semibold" style="font-size: 0.78rem;">Annual Family Income (₹) *</label>
+                    <input type="number" id="reg-income" class="form-control form-control-sm" placeholder="250000" required>
+                  </div>
+                  <div class="col-sm-6">
+                    <label class="form-label fw-semibold" style="font-size: 0.78rem;">Social Category *</label>
+                    <select id="reg-category" class="form-select form-select-sm" required>
+                      <option value="General">General</option>
+                      <option value="OBC">OBC (Other Backward Class)</option>
+                      <option value="SC">SC (Scheduled Caste)</option>
+                      <option value="ST">ST (Scheduled Tribe)</option>
+                      <option value="EWS">EWS (Economically Weaker Section)</option>
+                      <option value="Minority">Minority Communities</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="row g-2 mb-2">
+                  <div class="col-sm-6">
+                    <label class="form-label fw-semibold" style="font-size: 0.78rem;">Gender *</label>
+                    <select id="reg-gender" class="form-select form-select-sm" required>
+                      <option value="Female">Female</option>
+                      <option value="Male">Male</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                  <div class="col-sm-6">
+                    <label class="form-label fw-semibold" style="font-size: 0.78rem;">State of Domicile</label>
+                    <input type="text" id="reg-state" class="form-control form-control-sm" placeholder="Maharashtra" value="Maharashtra">
+                  </div>
+                </div>
+
+                <div class="row g-2 mb-3">
+                  <div class="col-sm-8">
+                    <label class="form-label fw-semibold" style="font-size: 0.78rem;">College / Institute Name</label>
+                    <input type="text" id="reg-college" class="form-control form-control-sm" placeholder="Government Engineering College">
+                  </div>
+                  <div class="col-sm-4">
+                    <label class="form-label fw-semibold" style="font-size: 0.78rem;">Year of Study</label>
+                    <select id="reg-year" class="form-select form-select-sm">
+                      <option value="1st Year">1st Year</option>
+                      <option value="2nd Year">2nd Year</option>
+                      <option value="3rd Year">3rd Year</option>
+                      <option value="Final Year">Final Year</option>
+                    </select>
+                  </div>
+                </div>
+
+                <button type="submit" class="btn btn-success w-100 rounded-pill fw-bold py-2">
+                  <i class="fa-solid fa-user-check me-2"></i> Complete Registration & Discover
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL: EDIT STUDENT PROFILE (MODULE 2) -->
+  <!-- ============================================================== -->
+  <div class="modal fade" id="profileEditModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: var(--radius-lg);">
+        <div class="modal-header border-bottom py-3 px-4">
+          <h5 class="modal-title fw-bold">Edit Student Profile Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <form id="student-profile-form" onsubmit="handleSaveProfile(event)">
+          <div class="modal-body p-4">
+            <div class="row g-2 mb-3">
+              <div class="col-sm-6">
+                <label class="form-label fw-semibold" style="font-size: 0.8rem;">Full Name</label>
+                <input type="text" id="prof-form-name" class="form-control form-control-sm" required>
+              </div>
+              <div class="col-sm-6">
+                <label class="form-label fw-semibold" style="font-size: 0.8rem;">Email</label>
+                <input type="email" id="prof-form-email" class="form-control form-control-sm" readonly style="background-color: #f1f5f9;">
+              </div>
+            </div>
+
+            <div class="row g-2 mb-3">
+              <div class="col-sm-6">
+                <label class="form-label fw-semibold" style="font-size: 0.8rem;">Education Level</label>
+                <select id="prof-form-level" class="form-select form-select-sm" required>
+                  <option value="Undergraduate">Undergraduate</option>
+                  <option value="Postgraduate">Postgraduate</option>
+                  <option value="Diploma">Diploma</option>
+                  <option value="Intermediate">Intermediate</option>
+                  <option value="School (9-12)">School (9th-12th)</option>
+                </select>
+              </div>
+              <div class="col-sm-6">
+                <label class="form-label fw-semibold" style="font-size: 0.8rem;">Course & Branch</label>
+                <input type="text" id="prof-form-course" class="form-control form-control-sm" required>
+              </div>
+            </div>
+
+            <div class="row g-2 mb-3">
+              <div class="col-sm-6">
+                <label class="form-label fw-semibold" style="font-size: 0.8rem;">College / Institute</label>
+                <input type="text" id="prof-form-college" class="form-control form-control-sm">
+              </div>
+              <div class="col-sm-6">
+                <label class="form-label fw-semibold" style="font-size: 0.8rem;">Year of Study</label>
+                <select id="prof-form-year" class="form-select form-select-sm">
+                  <option value="1st Year">1st Year</option>
+                  <option value="2nd Year">2nd Year</option>
+                  <option value="3rd Year">3rd Year</option>
+                  <option value="Final Year">Final Year</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row g-2 mb-3">
+              <div class="col-6">
+                <label class="form-label fw-semibold" style="font-size: 0.8rem;">Academic Marks (%)</label>
+                <input type="number" step="0.1" id="prof-form-marks" class="form-control form-control-sm" required>
+              </div>
+              <div class="col-6">
+                <label class="form-label fw-semibold" style="font-size: 0.8rem;">CGPA</label>
+                <input type="text" id="prof-form-cgpa" class="form-control form-control-sm">
+              </div>
+            </div>
+
+            <div class="row g-2 mb-3">
+              <div class="col-6">
+                <label class="form-label fw-semibold" style="font-size: 0.8rem;">Annual Income (₹)</label>
+                <input type="number" id="prof-form-income" class="form-control form-control-sm" required>
+              </div>
+              <div class="col-6">
+                <label class="form-label fw-semibold" style="font-size: 0.8rem;">Category</label>
+                <select id="prof-form-category" class="form-select form-select-sm">
+                  <option value="General">General</option>
+                  <option value="OBC">OBC</option>
+                  <option value="SC">SC</option>
+                  <option value="ST">ST</option>
+                  <option value="EWS">EWS</option>
+                  <option value="Minority">Minority</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row g-2 mb-3">
+              <div class="col-6">
+                <label class="form-label fw-semibold" style="font-size: 0.8rem;">Gender</label>
+                <select id="prof-form-gender" class="form-select form-select-sm">
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <label class="form-label fw-semibold" style="font-size: 0.8rem;">State of Domicile</label>
+                <input type="text" id="prof-form-state" class="form-control form-control-sm">
+              </div>
+            </div>
+
+            <div class="mb-2">
+              <div class="form-check form-switch mb-1">
+                <input class="form-check-input" type="checkbox" id="prof-form-single-girl">
+                <label class="form-check-label" for="prof-form-single-girl" style="font-size: 0.8rem;">Single Girl Child in family</label>
+              </div>
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="prof-form-pwd">
+                <label class="form-check-label" for="prof-form-pwd" style="font-size: 0.8rem;">Person with Disability (PwD &ge;40%)</label>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer border-top py-3 px-4">
+            <button type="button" class="btn btn-outline-secondary rounded-pill" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary rounded-pill px-4">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL: EDIT APPLICATION TRACKER DETAILS -->
+  <!-- ============================================================== -->
+  <div class="modal fade" id="editApplicationModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: var(--radius-lg);">
+        <div class="modal-header border-bottom py-3 px-4">
+          <h5 class="modal-title fw-bold" id="editAppModalTitle">Application Details & Notes</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <form id="edit-application-form" onsubmit="handleSaveApplicationDetails(event)">
+          <div class="modal-body p-4">
+            <input type="hidden" id="edit-app-id">
+            <div class="mb-3">
+              <label class="form-label fw-semibold" style="font-size: 0.8rem;">Scholarship Name</label>
+              <input type="text" id="edit-app-sch-name" class="form-control form-control-sm" readonly style="background-color: #f1f5f9;">
+            </div>
+
+            <div class="row g-2 mb-3">
+              <div class="col-sm-6">
+                <label class="form-label fw-semibold" style="font-size: 0.8rem;">Application Reference No.</label>
+                <input type="text" id="edit-app-no" class="form-control form-control-sm" placeholder="e.g. NSP/2026/89412">
+              </div>
+              <div class="col-sm-6">
+                <label class="form-label fw-semibold" style="font-size: 0.8rem;">Application Stage</label>
+                <select id="edit-app-status" class="form-select form-select-sm">
+                  <option value="Saved">Saved</option>
+                  <option value="In Progress">In Progress</option>
+                  <option value="Submitted">Submitted</option>
+                  <option value="Under Review">Under Review</option>
+                  <option value="Awarded">Awarded</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold" style="font-size: 0.8rem;">Submission Date</label>
+              <input type="date" id="edit-app-date" class="form-control form-control-sm">
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold" style="font-size: 0.8rem;">Tracking Notes & Next Actions</label>
+              <textarea id="edit-app-notes" class="form-control form-control-sm" rows="3" placeholder="e.g. College verified on 15 Nov; awaiting state merit list."></textarea>
+            </div>
+          </div>
+          <div class="modal-footer border-top py-3 px-4">
+            <button type="button" class="btn btn-outline-secondary rounded-pill" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary rounded-pill px-4">Save Progress</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL: DOCUMENT UPLOAD SIMULATOR (MODULE 6) -->
+  <!-- ============================================================== -->
+  <div class="modal fade" id="documentUploadModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: var(--radius-lg);">
+        <div class="modal-header border-bottom py-3 px-4">
+          <h5 class="modal-title fw-bold" id="docUploadModalTitle">Upload & Verify Certificate</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <form id="doc-upload-form" onsubmit="handleDocUploadSubmit(event)">
+          <div class="modal-body p-4">
+            <input type="hidden" id="upload-doc-id">
+            <div class="mb-3">
+              <label class="form-label fw-semibold" style="font-size: 0.8rem;">Document Title</label>
+              <input type="text" id="upload-doc-name" class="form-control form-control-sm" readonly style="background-color: #f1f5f9;">
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold" style="font-size: 0.8rem;">Select Document File (PDF / JPEG)</label>
+              <input type="file" id="upload-doc-file" class="form-control form-control-sm" accept=".pdf,.jpg,.jpeg,.png">
+              <div class="form-text" style="font-size: 0.72rem;">File size must be under 2MB for portal compliance.</div>
+            </div>
+
+            <div class="row g-2 mb-3">
+              <div class="col-sm-6">
+                <label class="form-label fw-semibold" style="font-size: 0.8rem;">Certificate / Ref No.</label>
+                <input type="text" id="upload-doc-ref" class="form-control form-control-sm" placeholder="e.g. INC/2026/7821">
+              </div>
+              <div class="col-sm-6">
+                <label class="form-label fw-semibold" style="font-size: 0.8rem;">Issue Date</label>
+                <input type="date" id="upload-doc-date" class="form-control form-control-sm">
+              </div>
+            </div>
+
+            <div class="p-3 rounded bg-light border text-muted" style="font-size: 0.8rem;">
+              <i class="fa-solid fa-shield-check text-success me-1"></i> DigiLocker verified certificates are fast-tracked automatically.
+            </div>
+          </div>
+          <div class="modal-footer border-top py-3 px-4">
+            <button type="button" class="btn btn-outline-secondary rounded-pill" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-success rounded-pill px-4">
+              <i class="fa-solid fa-cloud-arrow-up me-1"></i> Upload & Mark Ready
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- FLOATING AI SCHOLARSHIP ADVISOR CHATBOT -->
+  <!-- ============================================================== -->
+  <button class="floating-advisor-btn shadow-lg" onclick="toggleAdvisorChat()" id="btn-advisor-toggle" title="Chat with AI Scholarship Advisor">
+    <i class="fa-solid fa-robot"></i>
+    <span>Ask AI Advisor</span>
+    <span class="badge bg-warning text-dark rounded-pill ms-1" style="font-size: 0.65rem;">AI</span>
+  </button>
+
+  <div id="advisor-chat-window" class="advisor-chat-window d-none">
+    <div class="advisor-chat-header">
+      <div class="d-flex align-items-center gap-2">
+        <div class="rounded-circle bg-white text-primary d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; font-size: 0.9rem;">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+        </div>
+        <div>
+          <div class="fw-bold" style="font-size: 0.9rem;">GrantGlide AI Advisor</div>
+          <div class="text-white-50" style="font-size: 0.7rem;">Intelligent Scholarship Match Assistant</div>
+        </div>
+      </div>
+      <button type="button" class="btn-close btn-close-white btn-sm" onclick="toggleAdvisorChat()"></button>
+    </div>
+
+    <div class="advisor-chat-body" id="advisor-chat-body">
+      <div class="chat-bubble-ai">
+        👋 Hello <strong id="chat-student-name">Aarav</strong>! I'm your AI scholarship assistant. How can I help you discover or apply for grants today?
+      </div>
+      <div class="d-flex flex-wrap gap-1 mt-1">
+        <span class="quick-prompt-pill" onclick="sendQuickPrompt('Show scholarships for girls in technology')">👩‍💻 Girls in Tech</span>
+        <span class="quick-prompt-pill" onclick="sendQuickPrompt('Highest award scholarships')">💰 High Award (₹50k+)</span>
+        <span class="quick-prompt-pill" onclick="sendQuickPrompt('Scholarships closing this month')">⏳ Closing Soon</span>
+        <span class="quick-prompt-pill" onclick="sendQuickPrompt('Which documents do I need for NSP?')">📄 NSP Documents</span>
+      </div>
+    </div>
+
+    <div class="advisor-chat-footer">
+      <form onsubmit="handleAdvisorSubmit(event)" class="d-flex gap-2">
+        <input type="text" id="advisor-input" class="form-control form-control-sm rounded-pill" placeholder="Ask anything (e.g. 'OBC scholarships under 2.5L')...">
+        <button type="submit" class="btn btn-primary btn-sm rounded-circle" style="width: 34px; height: 34px; flex-shrink: 0;">
+          <i class="fa-solid fa-paper-plane" style="font-size: 0.75rem;"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- STICKY SCHOLARSHIP COMPARISON TRAY & MODAL -->
+  <!-- ============================================================== -->
+  <div id="comparison-tray" class="comparison-tray d-none">
+    <div class="d-flex align-items-center gap-3">
+      <div class="fw-bold"><i class="fa-solid fa-code-compare me-2 text-warning"></i>Compare Schemes (<span id="compare-count">0</span> / 3)</div>
+      <div id="compare-names-preview" class="d-none d-md-flex gap-2 text-white-50 small"></div>
+    </div>
+    <div class="d-flex gap-2">
+      <button class="btn btn-outline-light btn-sm rounded-pill px-3" onclick="clearComparison()">Clear</button>
+      <button class="btn btn-warning btn-sm rounded-pill px-4 fw-bold text-dark" onclick="openComparisonModal()">
+        Compare Now <i class="fa-solid fa-arrow-right ms-1"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="modal fade" id="comparisonModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: var(--radius-xl); overflow: hidden;">
+        <div class="modal-header bg-dark text-white border-0 py-3 px-4">
+          <div class="d-flex align-items-center gap-2">
+            <i class="fa-solid fa-code-compare text-warning"></i>
+            <h5 class="modal-title fw-bold mb-0">Scholarship Comparison Matrix</h5>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4" style="background: var(--bg-page);">
+          <div class="table-responsive">
+            <table class="table table-bordered bg-white shadow-sm rounded-4 align-middle mb-0" id="comparison-table">
+              <!-- Injected by JS -->
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer bg-light border-0 py-3 px-4 d-flex justify-content-between">
+          <button class="btn btn-outline-danger btn-sm rounded-pill" onclick="clearComparison(); bootstrap.Modal.getInstance(document.getElementById('comparisonModal')).hide();">Clear Comparison</button>
+          <button class="btn btn-primary rounded-pill px-4" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL: APPLICATION DOSSIER (PRINT / EXPORT) -->
+  <!-- ============================================================== -->
+  <div class="modal fade" id="dossierModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: var(--radius-xl);">
+        <div class="modal-header border-bottom py-3 px-4">
+          <div class="d-flex align-items-center gap-2">
+            <i class="fa-solid fa-file-invoice text-primary"></i>
+            <h5 class="modal-title fw-bold mb-0">Student Scholarship Application Dossier</h5>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4" id="dossier-print-content">
+          <div class="d-flex justify-content-between align-items-start border-bottom pb-3 mb-4">
+            <div>
+              <h3 class="fw-bold text-dark mb-0">GrantGlide – ScholarQuest</h3>
+              <div class="text-muted small">Institutional Scholarship Verification & Candidate Dossier</div>
+            </div>
+            <div class="text-end">
+              <span class="badge bg-success-subtle text-success border border-success fw-bold px-3 py-1">Official Dossier</span>
+              <div class="text-muted small mt-1">Generated: <span id="dossier-date">17 Nov 2026</span></div>
+            </div>
+          </div>
+
+          <!-- Student Profile Section -->
+          <div class="card p-3 mb-4 border rounded-3 bg-light">
+            <h6 class="fw-bold text-primary mb-2"><i class="fa-solid fa-user me-2"></i>Candidate Profile</h6>
+            <div class="row g-2 small">
+              <div class="col-sm-6"><strong>Name:</strong> <span id="dossier-name">Aarav Sharma</span></div>
+              <div class="col-sm-6"><strong>Student ID:</strong> <span id="dossier-id">std-101</span></div>
+              <div class="col-sm-6"><strong>Course:</strong> <span id="dossier-course">B.Tech Computer Science</span></div>
+              <div class="col-sm-6"><strong>College:</strong> <span id="dossier-college">Delhi Technological University</span></div>
+              <div class="col-sm-6"><strong>Academic Aggregate:</strong> <span id="dossier-marks">84.5% (CGPA 8.6)</span></div>
+              <div class="col-sm-6"><strong>Family Annual Income:</strong> <span id="dossier-income">₹3,20,000 / year</span></div>
+              <div class="col-sm-6"><strong>Social Category:</strong> <span id="dossier-cat">General</span></div>
+              <div class="col-sm-6"><strong>Gender:</strong> <span id="dossier-gender">Male</span></div>
+            </div>
+          </div>
+
+          <!-- Applications Tracked -->
+          <h6 class="fw-bold text-dark mb-2"><i class="fa-solid fa-list-check me-2 text-primary"></i>Tracked Scholarship Applications</h6>
+          <div class="table-responsive mb-4">
+            <table class="table table-bordered table-sm small mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>Scholarship Name</th>
+                  <th>Award</th>
+                  <th>Application Ref</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="dossier-apps-table">
+                <!-- Injected by JS -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Documents Verified -->
+          <h6 class="fw-bold text-dark mb-2"><i class="fa-solid fa-shield-check me-2 text-success"></i>Required Verification Checklist</h6>
+          <div class="table-responsive mb-4">
+            <table class="table table-bordered table-sm small mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>Document Name</th>
+                  <th>Issuing Authority</th>
+                  <th>Verification Status</th>
+                </tr>
+              </thead>
+              <tbody id="dossier-docs-table">
+                <!-- Injected by JS -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Verification Signature Box -->
+          <div class="row g-3 pt-3 border-top mt-4 text-center">
+            <div class="col-6">
+              <div class="pt-4 border-top border-secondary text-muted small">Candidate Signature</div>
+            </div>
+            <div class="col-6">
+              <div class="pt-4 border-top border-secondary text-muted small">College Scholarship Nodal Officer Seal & Sign</div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-top py-3 px-4 d-flex justify-content-between">
+          <button class="btn btn-outline-secondary rounded-pill" data-bs-dismiss="modal">Close</button>
+          <button class="btn btn-primary rounded-pill px-4" onclick="window.print()">
+            <i class="fa-solid fa-print me-1"></i> Print / Save as PDF
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Alert Container -->
+  <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 2000;">
+    <div id="appToast" class="toast align-items-center text-white bg-primary border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body" id="toastMessage">
+          Notification alert.
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/presentation.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>

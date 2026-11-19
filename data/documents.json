@@ -1,0 +1,82 @@
+[
+  {
+    "id": "doc-01",
+    "name": "Income Certificate",
+    "category": "Income & Caste",
+    "issuing_authority": "Tehsildar / Sub-Divisional Magistrate (SDM) / Revenue Department",
+    "validity": "Valid for 1 financial year",
+    "how_to_obtain": "Apply through your State e-District portal or visit your local CSC / Tehsildar office with salary slips, ITR, or Gram Panchayat self-declaration. Processing typically takes 5 to 10 working days.",
+    "common_rejection_reasons": "Expired financial year certificate, missing QR/digital signature, or certificate issued in parent's name without student relation mentioned.",
+    "mandatory_for": ["NSP Schemes", "State Scholarships", "Corporate Need-based CSR"]
+  },
+  {
+    "id": "doc-02",
+    "name": "Caste / Category Certificate",
+    "category": "Income & Caste",
+    "issuing_authority": "District Magistrate / Sub-Divisional Officer / Revenue Circle Officer",
+    "validity": "Permanent for SC/ST; OBC Non-Creamy Layer (NCL) requires annual renewal",
+    "how_to_obtain": "Submit family lineage proof, father's caste certificate, and residential proof on the state e-District portal.",
+    "common_rejection_reasons": "Submitting State list certificate for Central Govt quota, or submitting Creamy Layer status for OBC reserved seats.",
+    "mandatory_for": ["SC/ST Post-Matric", "OBC Welfare", "EWS Quota"]
+  },
+  {
+    "id": "doc-03",
+    "name": "Bonafide Student Certificate",
+    "category": "Academic",
+    "issuing_authority": "College / University Registrar or School Principal",
+    "validity": "Current Academic Year / Semester",
+    "how_to_obtain": "Request from the College Academic Section or Student Welfare Office with your current year fee receipt and college ID card.",
+    "common_rejection_reasons": "Missing official institute seal, outdated academic session, or unsigned by the authorized signatory.",
+    "mandatory_for": ["Almost all government and private scholarships"]
+  },
+  {
+    "id": "doc-04",
+    "name": "Aadhaar Card (Linked with Mobile & Bank)",
+    "category": "Identity",
+    "issuing_authority": "Unique Identification Authority of India (UIDAI)",
+    "validity": "Lifetime",
+    "how_to_obtain": "Visit UIDAI enrollment center or download e-Aadhaar from uidai.gov.in using Aadhaar OTP.",
+    "common_rejection_reasons": "Bank account not NPCI/Aadhaar seeded (causes DBT failure), or mismatched spelling of student name with marksheet.",
+    "mandatory_for": ["All Direct Benefit Transfer (DBT) Scholarships"]
+  },
+  {
+    "id": "doc-05",
+    "name": "Previous Qualifying Marksheets (10th / 12th / Semester)",
+    "category": "Academic",
+    "issuing_authority": "State Board / CBSE / ICSE / Respective University",
+    "validity": "Permanent",
+    "how_to_obtain": "Original mark sheet from school/college or DigiLocker certified digital copy.",
+    "common_rejection_reasons": "Blurry scans, submitting provisional web results without college attestation, or cut-off corners.",
+    "mandatory_for": ["Merit-based scholarships", "All higher education applications"]
+  },
+  {
+    "id": "doc-06",
+    "name": "Bank Account Passbook / Cancelled Cheque",
+    "category": "Banking",
+    "issuing_authority": "Nationalized / Scheduled Commercial Bank",
+    "validity": "Active Bank Account",
+    "how_to_obtain": "Download latest computerized bank statement or scan the first page of your passbook showing account number and IFSC code.",
+    "common_rejection_reasons": "Submitting minor/joint account with parents without proper permission, or account dormant due to inactivity.",
+    "mandatory_for": ["Scholarship disbursement"]
+  },
+  {
+    "id": "doc-07",
+    "name": "Single Girl Child Affidavit",
+    "category": "Special",
+    "issuing_authority": "First Class Judicial Magistrate / Notary Public on ₹100 Stamp Paper",
+    "validity": "Current academic year",
+    "how_to_obtain": "Draft affidavit stating that the applicant is the only girl child or only two girl children in the family, sworn before a notary public.",
+    "common_rejection_reasons": "Unnotarized plain paper declaration or missing parental signature.",
+    "mandatory_for": ["AICTE Pragati", "CBSE Single Girl Child Scheme"]
+  },
+  {
+    "id": "doc-08",
+    "name": "Disability Certificate (PwD)",
+    "category": "Special",
+    "issuing_authority": "District Medical Board / Chief Medical Officer (CMO)",
+    "validity": "Permanent (or as stated for temporary impairment)",
+    "how_to_obtain": "Obtain UDID card online via swavlambancard.gov.in after assessment by authorized government medical board.",
+    "common_rejection_reasons": "Disability percentage less than 40%, or expired temporary disability certificate.",
+    "mandatory_for": ["AICTE Saksham", "Central PwD Scholarships"]
+  }
+]
